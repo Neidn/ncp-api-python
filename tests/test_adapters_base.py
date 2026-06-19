@@ -63,7 +63,10 @@ def test_request_sends_auth_headers(httpx_mock: Any) -> None:
 
 
 def test_request_401_raises_auth_error(httpx_mock: Any) -> None:
-    httpx_mock.add_response(status_code=401, json={"returnCode": "401", "returnMessage": "Unauthorized"})
+    httpx_mock.add_response(
+        status_code=401,
+        json={"returnCode": "401", "returnMessage": "Unauthorized"},
+    )
     adapter = make_adapter()
     with pytest.raises(NcpAuthError):
         adapter.request("GET", "/test/path")

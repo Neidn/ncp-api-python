@@ -4,11 +4,12 @@ import base64
 import hashlib
 import hmac as stdlib_hmac
 
-
 from ncp_api.auth import HmacSigner
 
 
-def _expected_signature(secret_key: str, method: str, url: str, timestamp: int, access_key: str) -> str:
+def _expected_signature(
+    secret_key: str, method: str, url: str, timestamp: int, access_key: str
+) -> str:
     string_to_sign = f"{method}\n{url}\n{timestamp}\n{access_key}"
     mac = stdlib_hmac.new(
         secret_key.encode("utf-8"),
@@ -71,5 +72,7 @@ def test_sign_different_urls_produce_different_signatures() -> None:
 def test_sign_query_string_included_in_signature() -> None:
     signer = HmacSigner("key", "secret")
     sig_no_query = signer.sign("GET", "/path", 1000)["x-ncp-apigw-signature-v2"]
-    sig_with_query = signer.sign("GET", "/path?foo=bar", 1000)["x-ncp-apigw-signature-v2"]
+    sig_with_query = signer.sign("GET", "/path?foo=bar", 1000)[
+        "x-ncp-apigw-signature-v2"
+    ]
     assert sig_no_query != sig_with_query

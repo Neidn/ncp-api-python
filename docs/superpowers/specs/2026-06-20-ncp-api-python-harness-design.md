@@ -31,18 +31,22 @@ Single workflow file: `.github/workflows/main.yml`
 
 **Trigger:** push to `main`
 
-**Jobs (sequential):**
+**Jobs:**
 
-1. **quality** — lint + typecheck in parallel
-   - `ruff check .` + `ruff format --check .`
-   - `mypy src/`
-   - Python 3.12 (fast, no matrix needed here)
+```
+lint ─┐
+      ├─→ test (matrix) ─→ release
+typecheck ─┘
+```
 
-2. **test** — `needs: quality`
+1. **lint** — `ruff check .` + `ruff format --check .` (Python 3.12)
+2. **typecheck** — `mypy src/` (Python 3.12)
+   - `lint` + `typecheck` run in parallel
+3. **test** — `needs: [lint, typecheck]`
    - Matrix: Python 3.9, 3.10, 3.11, 3.12
    - `uv sync --all-groups && pytest`
 
-3. **release** — `needs: test`
+4. **release** — `needs: test`
    - `python-semantic-release`
    - Parses commits since last tag:
      - `fix:` → patch bump (0.1.0 → 0.1.1)

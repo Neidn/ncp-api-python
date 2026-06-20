@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from types import TracebackType
 from typing import Any, ClassVar
 
 import httpx
@@ -91,3 +92,31 @@ class NcpHttpAdapter:
             raise NcpNetworkError(str(exc)) from exc
         except httpx.TimeoutException as exc:
             raise NcpNetworkError(str(exc)) from exc
+
+    def close(self) -> None:
+        self._client.close()
+
+    async def aclose(self) -> None:
+        await self._async_client.aclose()
+
+    def __enter__(self) -> NcpHttpAdapter:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        self.close()
+
+    async def __aenter__(self) -> NcpHttpAdapter:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        await self.aclose()

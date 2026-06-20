@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from types import TracebackType
 
 from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.gov import GovAdapter
@@ -36,3 +37,31 @@ class NcpClient:
             self._adapter = GovAdapter(base_url, signer)
         else:
             self._adapter = FinAdapter(base_url, signer)
+
+    def close(self) -> None:
+        self._adapter.close()
+
+    async def aclose(self) -> None:
+        await self._adapter.aclose()
+
+    def __enter__(self) -> NcpClient:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        self.close()
+
+    async def __aenter__(self) -> NcpClient:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        await self.aclose()

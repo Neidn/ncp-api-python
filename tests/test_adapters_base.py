@@ -124,3 +124,19 @@ async def test_arequest_401_raises_auth_error(httpx_mock: Any) -> None:
     adapter = make_adapter()
     with pytest.raises(NcpAuthError):
         await adapter.arequest("GET", "/test/path")
+
+
+@pytest.mark.asyncio
+async def test_arequest_network_error_raises_network_error(httpx_mock: Any) -> None:
+    httpx_mock.add_exception(httpx.ConnectError("connection refused"))
+    adapter = make_adapter()
+    with pytest.raises(NcpNetworkError):
+        await adapter.arequest("GET", "/test/path")
+
+
+@pytest.mark.asyncio
+async def test_arequest_timeout_raises_network_error(httpx_mock: Any) -> None:
+    httpx_mock.add_exception(httpx.TimeoutException("timed out"))
+    adapter = make_adapter()
+    with pytest.raises(NcpNetworkError):
+        await adapter.arequest("GET", "/test/path")

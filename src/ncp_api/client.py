@@ -6,6 +6,7 @@ from types import TracebackType
 from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.gov import GovAdapter
 from ncp_api.adapters.public import PublicAdapter
+from ncp_api.adapters.cloud_insight import CloudInsightApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import BASE_URLS, NcpEnv
@@ -42,6 +43,10 @@ class NcpClient:
     @property
     def server(self) -> ServerApi:
         return self._adapter.server
+
+    @property
+    def cloud_insight(self) -> CloudInsightApi:
+        return self._adapter.cloud_insight
 
     def close(self) -> None:
         self._adapter.close()

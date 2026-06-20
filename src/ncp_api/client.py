@@ -6,6 +6,7 @@ from types import TracebackType
 from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.gov import GovAdapter
 from ncp_api.adapters.public import PublicAdapter
+from ncp_api.adapters.server import ServerApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import BASE_URLS, NcpEnv
 
@@ -37,6 +38,10 @@ class NcpClient:
             self._adapter = GovAdapter(base_url, signer)
         else:
             self._adapter = FinAdapter(base_url, signer)
+
+    @property
+    def server(self) -> ServerApi:
+        return self._adapter.server
 
     def close(self) -> None:
         self._adapter.close()

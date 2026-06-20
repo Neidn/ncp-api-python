@@ -7,7 +7,7 @@ import pytest
 
 from ncp_api.adapters.cloud_insight import CloudInsightApi, MetricInfo
 
-BASE_URL = "https://ncloud.apigw.ntruss.com"
+CI_BASE_URL = "https://cw.apigw.ntruss.com"
 ENDPOINT = "https://cw.apigw.ntruss.com/cw_fea/real/cw/api/data/query/multiple"
 
 SAMPLE_RESPONSE = [
@@ -32,12 +32,12 @@ METRIC_INFO = MetricInfo(
 def make_api() -> CloudInsightApi:
     from ncp_api.auth import HmacSigner
     signer = HmacSigner("testkey", "testsecret")
-    return CloudInsightApi(BASE_URL, signer)
+    return CloudInsightApi(CI_BASE_URL, signer)
 
 
-def test_cloud_insight_uses_own_domain() -> None:
+def test_cloud_insight_uses_injected_domain() -> None:
     api = make_api()
-    assert api.base_url == "https://cw.apigw.ntruss.com"
+    assert api.base_url == CI_BASE_URL
 
 
 def test_query_data_multiple_returns_list(httpx_mock: Any) -> None:

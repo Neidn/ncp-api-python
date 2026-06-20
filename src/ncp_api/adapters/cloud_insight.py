@@ -4,6 +4,13 @@ from dataclasses import dataclass
 from typing import Any, ClassVar, cast
 
 from ncp_api.adapters.base import NcpHttpAdapter
+from ncp_api.environment import NcpEnv
+
+CLOUD_INSIGHT_BASE_URLS: dict[NcpEnv, str] = {
+    NcpEnv.PUBLIC: "https://cw.apigw.ntruss.com",
+    NcpEnv.GOV: "https://cw.apigw.gov-ntruss.com",  # TBD: confirm from gov docs
+    NcpEnv.FIN: "https://cw.apigw.fin-ntruss.com",  # TBD: confirm from fin docs
+}
 
 
 @dataclass
@@ -41,7 +48,6 @@ def _build_request_body(
 
 
 class CloudInsightApi(NcpHttpAdapter):
-    _service_base_url: ClassVar[str] = "https://cw.apigw.ntruss.com"
     path_prefix: ClassVar[str] = "/cw_fea/real/cw/api"
 
     def query_data_multiple(

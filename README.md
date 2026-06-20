@@ -128,11 +128,62 @@ async with NcpClient(access_key="KEY", secret_key="SECRET") as client:
     result = await client.server.aget_server_instance_list()
 ```
 
+## Cloud Insight
+
+Query metric data from [NCP Cloud Insight](https://www.ncloud.com/product/management/cloudInsight).
+
+```python
+from ncp_api import NcpClient
+from ncp_api.adapters.cloud_insight import MetricInfo
+
+client = NcpClient(access_key="KEY", secret_key="SECRET")
+
+results = client.cloud_insight.query_data_multiple(
+    time_start=1718000000000,   # Unix timestamp in milliseconds
+    time_end=1718003600000,
+    metric_info_list=[
+        MetricInfo(
+            prod_key="cw_key_server",
+            metric="cpu_used_rto",
+            interval="Min1",                      # Min1, Min5, Min30, Hour2, Day1
+            dimensions={"instanceNo": "12345"},
+            aggregation="AVG",                    # COUNT, SUM, MAX, MIN, AVG (default: AVG)
+        ),
+        MetricInfo(
+            prod_key="cw_key_server",
+            metric="mem_usert",
+            interval="Min5",
+            dimensions={"instanceNo": "12345"},
+            aggregation="MAX",
+            query_aggregation="SUM",              # optional: aggregation across query window
+        ),
+    ],
+)
+
+# results is a list — one entry per MetricInfo
+for r in results:
+    print(r["metric"])         # "cpu_used_rto"
+    print(r["dps"])            # [[timestamp_ms, value], ...]
+```
+
+Async:
+
+```python
+results = await client.cloud_insight.aquery_data_multiple(
+    time_start=1718000000000,
+    time_end=1718003600000,
+    metric_info_list=[MetricInfo(...)],
+)
+```
+
+Up to 20 metrics per call.
+
 ## Supported APIs
 
 | Service | Method | Description |
 |---------|--------|-------------|
 | Server | `get_server_instance_list` | List VPC server instances |
+| Cloud Insight | `query_data_multiple` | Query metric data (up to 20 metrics) |
 
 ## Development
 

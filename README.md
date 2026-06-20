@@ -54,19 +54,66 @@ client = NcpClient(access_key="KEY", secret_key="SECRET")
 ## Error Handling
 
 ```python
-from ncp_api import NcpAuthError, NcpApiError, NcpNetworkError
+from ncp_api import (
+    NcpAuthError,
+    NcpApiError,
+    NcpRateLimitError,
+    NcpNetworkError,
+)
 
 try:
     result = client.server.get_server_instance_list()
-except NcpAuthError:
-    # 401 — invalid credentials or signature
-    ...
+except NcpAuthError as e:
+    # HTTP 401
+    # e.error_code == "200" → invalid credentials (check access/secret key)
+    # e.error_code == "210" → permission denied (check sub-account permissions)
+    print(e.error_code, e)
+except NcpRateLimitError as e:
+    # HTTP 429 — quota or rate limit hit
+    # e.error_code == "400" → quota exceeded
+    # e.error_code == "410" → throttle limited
+    # e.error_code == "420" → rate limited
+    print(e.error_code, e.message)
 except NcpApiError as e:
-    # Non-2xx response from NCP
+    # Other non-2xx responses
     print(e.status_code, e.error_code, e.message)
 except NcpNetworkError:
     # Connection failure or timeout
     ...
+```
+
+`NcpRateLimitError` is a subclass of `NcpApiError`, so `except NcpApiError` catches it too. Catch `NcpRateLimitError` first if you want to handle rate limits separately (e.g., retry with backoff).
+
+### Retry on Rate Limit
+
+The library raises `NcpRateLimitError` and leaves retry strategy to the caller. Example with `tenacity`:
+
+```python
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
+from ncp_api import NcpRateLimitError
+
+@retry(
+    retry=retry_if_exception_type(NcpRateLimitError),
+    wait=wait_exponential(multiplier=1, min=2, max=60),
+    stop=stop_after_attempt(5),
+)
+def list_servers():
+    return client.server.get_server_instance_list()
+```
+
+Or without a library:
+
+```python
+import time
+
+def list_servers_with_retry(max_attempts: int = 5) -> dict:
+    for attempt in range(max_attempts):
+        try:
+            return client.server.get_server_instance_list()
+        except NcpRateLimitError:
+            if attempt == max_attempts - 1:
+                raise
+            time.sleep(2 ** attempt)  # exponential backoff: 1s, 2s, 4s, 8s...
 ```
 
 ## Client Lifecycle

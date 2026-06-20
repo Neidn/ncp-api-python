@@ -7,7 +7,7 @@ import pytest
 
 from ncp_api.adapters.base import NcpHttpAdapter
 from ncp_api.auth import HmacSigner
-from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpNetworkError
+from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpNetworkError, NcpRateLimitError
 
 
 def make_adapter(base_url: str = "https://ncloud.apigw.ntruss.com") -> NcpHttpAdapter:
@@ -65,10 +65,44 @@ def test_request_sends_auth_headers(httpx_mock: Any) -> None:
 def test_request_401_raises_auth_error(httpx_mock: Any) -> None:
     httpx_mock.add_response(
         status_code=401,
-        json={"returnCode": "401", "returnMessage": "Unauthorized"},
+        json={"returnCode": "200", "returnMessage": "Authentication Failed"},
     )
     adapter = make_adapter()
-    with pytest.raises(NcpAuthError):
+    with pytest.raises(NcpAuthError) as exc_info:
+        adapter.request("GET", "/test/path")
+    assert exc_info.value.error_code == "200"
+
+
+def test_request_401_permission_denied_has_error_code(httpx_mock: Any) -> None:
+    httpx_mock.add_response(
+        status_code=401,
+        json={"returnCode": "210", "returnMessage": "Permission Denied"},
+    )
+    adapter = make_adapter()
+    with pytest.raises(NcpAuthError) as exc_info:
+        adapter.request("GET", "/test/path")
+    assert exc_info.value.error_code == "210"
+
+
+def test_request_429_raises_rate_limit_error(httpx_mock: Any) -> None:
+    httpx_mock.add_response(
+        status_code=429,
+        json={"returnCode": "400", "returnMessage": "Quota Exceeded"},
+    )
+    adapter = make_adapter()
+    with pytest.raises(NcpRateLimitError) as exc_info:
+        adapter.request("GET", "/test/path")
+    assert exc_info.value.status_code == 429
+    assert exc_info.value.error_code == "400"
+
+
+def test_request_429_is_also_api_error(httpx_mock: Any) -> None:
+    httpx_mock.add_response(
+        status_code=429,
+        json={"returnCode": "420", "returnMessage": "Rate Limited"},
+    )
+    adapter = make_adapter()
+    with pytest.raises(NcpApiError):
         adapter.request("GET", "/test/path")
 
 

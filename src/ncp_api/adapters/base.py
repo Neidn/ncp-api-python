@@ -7,7 +7,7 @@ from typing import Any, ClassVar
 import httpx
 
 from ncp_api.auth import HmacSigner
-from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpNetworkError
+from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpNetworkError, NcpRateLimitError
 
 
 class NcpHttpAdapter:
@@ -36,8 +36,6 @@ class NcpHttpAdapter:
         return self._signer.sign(method.upper(), sign_target, timestamp)
 
     def _handle_response(self, response: httpx.Response) -> dict[str, Any]:
-        if response.status_code == 401:
-            raise NcpAuthError(f"Authentication failed ({response.status_code})")
         if response.is_error:
             try:
                 body: dict[str, Any] = response.json()
@@ -49,6 +47,14 @@ class NcpHttpAdapter:
             message = str(
                 body.get("returnMessage", body.get("message", response.text))
             )
+            if response.status_code == 401:
+                raise NcpAuthError(message, error_code=error_code)
+            if response.status_code == 429:
+                raise NcpRateLimitError(
+                    status_code=response.status_code,
+                    error_code=error_code,
+                    message=message,
+                )
             raise NcpApiError(
                 status_code=response.status_code,
                 error_code=error_code,

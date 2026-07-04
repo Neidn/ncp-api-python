@@ -18,7 +18,7 @@ class HmacSigner:
             url: Path + query string only, e.g. "/vserver/v2/list?region=KR".
             timestamp: Unix time in milliseconds.
         """
-        string_to_sign = f"{method}\n{url}\n{timestamp}\n{self._access_key}"
+        string_to_sign = f"{method} {url}\n{timestamp}\n{self._access_key}"
         mac = hmac.new(
             self._secret_key.encode("utf-8"),
             string_to_sign.encode("utf-8"),

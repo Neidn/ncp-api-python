@@ -3,6 +3,7 @@ from __future__ import annotations
 import time
 from types import TracebackType
 from typing import Any, ClassVar
+from urllib.parse import urlencode
 
 import httpx
 
@@ -63,9 +64,14 @@ class NcpHttpAdapter:
         result: dict[str, Any] = response.json()
         return result
 
+    def _sign_url(self, url: str, params: dict[str, str] | None) -> str:
+        if params:
+            return f"{url}?{urlencode(params)}"
+        return url
+
     def request(self, method: str, path: str, **kwargs: Any) -> dict[str, Any]:
         url = self._resolve_url(path)
-        auth_headers = self._make_auth_headers(method, url)
+        auth_headers = self._make_auth_headers(method, self._sign_url(url, kwargs.get("params")))
         try:
             response = self._client.request(
                 method=method.upper(),
@@ -83,7 +89,7 @@ class NcpHttpAdapter:
 
     async def arequest(self, method: str, path: str, **kwargs: Any) -> dict[str, Any]:
         url = self._resolve_url(path)
-        auth_headers = self._make_auth_headers(method, url)
+        auth_headers = self._make_auth_headers(method, self._sign_url(url, kwargs.get("params")))
         try:
             response = await self._async_client.request(
                 method=method.upper(),

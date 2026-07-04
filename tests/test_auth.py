@@ -10,7 +10,7 @@ from ncp_api.auth import HmacSigner
 def _expected_signature(
     secret_key: str, method: str, url: str, timestamp: int, access_key: str
 ) -> str:
-    string_to_sign = f"{method}\n{url}\n{timestamp}\n{access_key}"
+    string_to_sign = f"{method} {url}\n{timestamp}\n{access_key}"
     mac = stdlib_hmac.new(
         secret_key.encode("utf-8"),
         string_to_sign.encode("utf-8"),

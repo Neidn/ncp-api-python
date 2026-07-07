@@ -71,3 +71,27 @@ class CloudInsightApi(NcpHttpAdapter):
         body = _build_request_body(time_start, time_end, metric_info_list)
         raw = await self.arequest("POST", "/data/query/multiple", json=body)
         return cast(list[dict[str, Any]], raw)
+
+    def get_servers_top(
+        self,
+        *,
+        query: str,
+        prod: str | None = None,
+    ) -> list[dict[str, Any]]:
+        params: dict[str, str] = {"query": query}
+        if prod is not None:
+            params["prod"] = prod
+        raw = self.request("POST", "/servers/top", params=params)
+        return cast(list[dict[str, Any]], raw)
+
+    async def aget_servers_top(
+        self,
+        *,
+        query: str,
+        prod: str | None = None,
+    ) -> list[dict[str, Any]]:
+        params: dict[str, str] = {"query": query}
+        if prod is not None:
+            params["prod"] = prod
+        raw = await self.arequest("POST", "/servers/top", params=params)
+        return cast(list[dict[str, Any]], raw)

@@ -7,6 +7,8 @@ from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.gov import GovAdapter
 from ncp_api.adapters.public import PublicAdapter
 from ncp_api.adapters.cloud_insight import CloudInsightApi
+from ncp_api.adapters.mongodb import CloudMongoDbApi
+from ncp_api.adapters.mysql import CloudMysqlApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import BASE_URLS, NcpEnv
@@ -47,6 +49,14 @@ class NcpClient:
     @property
     def cloud_insight(self) -> CloudInsightApi:
         return self._adapter.cloud_insight
+
+    @property
+    def mysql(self) -> CloudMysqlApi:
+        return self._adapter.mysql
+
+    @property
+    def mongodb(self) -> CloudMongoDbApi:
+        return self._adapter.mongodb
 
     def close(self) -> None:
         self._adapter.close()

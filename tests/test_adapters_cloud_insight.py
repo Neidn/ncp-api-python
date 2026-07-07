@@ -167,3 +167,71 @@ async def test_aquery_data_multiple_sends_post(httpx_mock: Any) -> None:
     )
     sent = httpx_mock.get_requests()[0]
     assert sent.method == "POST"
+
+
+SERVERS_TOP_RESPONSE = [
+    {
+        "avg_cpu_user_rto": "0.34282196",
+        "hostName": "server-01",
+        "instanceNo": "12345",
+        "avg_cpu_used_rto": 0.34282196,
+        "avg_fs_usert": 8.1264,
+        "mem_usert": 4.8596377,
+    },
+    {
+        "avg_cpu_user_rto": "0.3427846",
+        "hostName": "server-02",
+        "instanceNo": "12346",
+        "avg_cpu_used_rto": 0.3427846,
+        "avg_fs_usert": 8.132111,
+        "mem_usert": 4.678288,
+    },
+]
+
+
+def test_get_servers_top_returns_list(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SERVERS_TOP_RESPONSE)
+    api = make_api()
+    result = api.get_servers_top(query="avg_cpu_used_rto")
+    assert isinstance(result, list)
+    assert result[0]["hostName"] == "server-01"
+    assert result[0]["avg_cpu_used_rto"] == 0.34282196
+
+
+def test_get_servers_top_sends_post_with_query_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SERVERS_TOP_RESPONSE)
+    api = make_api()
+    api.get_servers_top(query="avg_cpu_used_rto")
+    sent = httpx_mock.get_requests()[0]
+    assert sent.method == "POST"
+    assert "query=avg_cpu_used_rto" in str(sent.url)
+    assert str(sent.url).startswith(
+        f"{CI_BASE_URL}/cw_fea/real/cw/api/servers/top"
+    )
+
+
+def test_get_servers_top_with_prod_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SERVERS_TOP_RESPONSE)
+    api = make_api()
+    api.get_servers_top(query="mem_usert", prod="Classic")
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "query=mem_usert" in url
+    assert "prod=Classic" in url
+
+
+def test_get_servers_top_without_prod_omits_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SERVERS_TOP_RESPONSE)
+    api = make_api()
+    api.get_servers_top(query="avg_fs_usert")
+    sent = httpx_mock.get_requests()[0]
+    assert "prod" not in str(sent.url)
+
+
+@pytest.mark.asyncio
+async def test_aget_servers_top_returns_list(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SERVERS_TOP_RESPONSE)
+    api = make_api()
+    result = await api.aget_servers_top(query="avg_cpu_used_rto")
+    assert isinstance(result, list)
+    assert result[0]["instanceNo"] == "12345"

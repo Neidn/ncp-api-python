@@ -132,6 +132,8 @@ async with NcpClient(access_key="KEY", secret_key="SECRET") as client:
 
 Query metric data from [NCP Cloud Insight](https://www.ncloud.com/product/management/cloudInsight).
 
+### query_data_multiple
+
 ```python
 from ncp_api import NcpClient
 from ncp_api.adapters.cloud_insight import MetricInfo
@@ -162,8 +164,8 @@ results = client.cloud_insight.query_data_multiple(
 
 # results is a list — one entry per MetricInfo
 for r in results:
-    print(r["metric"])         # "cpu_used_rto"
-    print(r["dps"])            # [[timestamp_ms, value], ...]
+    print(r["metric"])   # "cpu_used_rto"
+    print(r["dps"])      # [[timestamp_ms, value], ...]
 ```
 
 Async:
@@ -178,12 +180,82 @@ results = await client.cloud_insight.aquery_data_multiple(
 
 Up to 20 metrics per call.
 
+### get_servers_top
+
+Returns the top 5 servers by CPU, memory, or filesystem usage.
+
+```python
+# query: "avg_cpu_used_rto" | "mem_usert" | "avg_fs_usert"
+# prod:  "VPC" (default) | "Classic"
+results = client.cloud_insight.get_servers_top(query="avg_cpu_used_rto")
+results = client.cloud_insight.get_servers_top(query="mem_usert", prod="Classic")
+
+for server in results:
+    print(server["hostName"], server["avg_cpu_used_rto"])
+
+# Async
+results = await client.cloud_insight.aget_servers_top(query="avg_fs_usert")
+```
+
+## Cloud DB for MySQL
+
+```python
+result = client.mysql.get_cloud_mysql_instance_list()
+instances = result["cloudMysqlInstanceList"]
+total = result["totalRows"]
+
+# With filters
+result = client.mysql.get_cloud_mysql_instance_list(
+    vpc_no="123",
+    cloud_mysql_service_name="my-db",
+    generation_code="G2",           # "G2" | "G3"
+    page_no=0,
+    page_size=20,
+)
+
+# Filter by instance numbers
+result = client.mysql.get_cloud_mysql_instance_list(
+    cloud_mysql_instance_no_list=["111111", "222222"],
+)
+
+# Async
+result = await client.mysql.aget_cloud_mysql_instance_list(vpc_no="123")
+```
+
+## Cloud DB for MongoDB
+
+```python
+result = client.mongodb.get_cloud_mongodb_instance_list()
+instances = result["cloudMongoDbInstanceList"]
+total = result["totalRows"]
+
+# With filters
+result = client.mongodb.get_cloud_mongodb_instance_list(
+    vpc_no="456",
+    cloud_mongodb_service_name="my-mongo",
+    generation_code="G3",           # "G2" | "G3"
+    page_no=0,
+    page_size=20,
+)
+
+# Filter by instance numbers
+result = client.mongodb.get_cloud_mongodb_instance_list(
+    cloud_mongodb_instance_no_list=["333333", "444444"],
+)
+
+# Async
+result = await client.mongodb.aget_cloud_mongodb_instance_list(vpc_no="456")
+```
+
 ## Supported APIs
 
 | Service | Method | Description |
 |---------|--------|-------------|
 | Server | `get_server_instance_list` | List VPC server instances |
-| Cloud Insight | `query_data_multiple` | Query metric data (up to 20 metrics) |
+| Cloud Insight | `query_data_multiple` | Query metric time-series data (up to 20 metrics) |
+| Cloud Insight | `get_servers_top` | Top 5 servers by CPU / memory / filesystem usage |
+| Cloud DB for MySQL | `get_cloud_mysql_instance_list` | List Cloud DB for MySQL instances |
+| Cloud DB for MongoDB | `get_cloud_mongodb_instance_list` | List Cloud DB for MongoDB instances |
 
 ## Development
 
@@ -196,3 +268,30 @@ make typecheck  # mypy
 ```
 
 Requires [uv](https://docs.astral.sh/uv/).
+
+### Integration Tests
+
+Unit tests use mocked HTTP. To run tests against the live NCP API, create a `.env` file in the project root:
+
+```bash
+cp .env.example .env
+# fill in your credentials
+```
+
+```ini
+NCP_ACCESS_KEY=ncp_iam_...
+NCP_SECRET_KEY=ncp_iam_...
+NCP_ENV=public
+```
+
+Then run:
+
+```bash
+# integration tests only
+uv run pytest tests/test_integration.py -v
+
+# all tests (unit + integration)
+uv run pytest -v
+```
+
+Integration tests are automatically skipped when credentials are not present.

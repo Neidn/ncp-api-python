@@ -30,3 +30,8 @@ def test_live_mongodb_list(live_client: NcpClient) -> None:
     result = live_client.mongodb.get_cloud_mongodb_instance_list()
     assert "totalRows" in result
     assert isinstance(result.get("cloudMongoDbInstanceList", []), list)
+
+
+def test_live_nks_cluster_list(live_client: NcpClient) -> None:
+    result = live_client.nks.get_cluster_list()
+    assert isinstance(result, list)

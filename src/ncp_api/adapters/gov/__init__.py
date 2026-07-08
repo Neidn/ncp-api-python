@@ -5,6 +5,7 @@ from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsight
 from ncp_api.adapters.mongodb import CloudMongoDbApi
 from ncp_api.adapters.mysql import CloudMysqlApi
 from ncp_api.adapters.nks import NksApi
+from ncp_api.adapters.postgresql import CloudPostgresqlApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import NcpEnv
@@ -19,4 +20,5 @@ class GovAdapter(NcpHttpAdapter):
         self.cloud_insight = CloudInsightApi(CLOUD_INSIGHT_BASE_URLS[NcpEnv.GOV], signer)
         self.mysql = CloudMysqlApi(env_base_url, signer)
         self.mongodb = CloudMongoDbApi(env_base_url, signer)
+        self.postgresql = CloudPostgresqlApi(env_base_url, signer)
         self.nks = NksApi(env_base_url, signer)

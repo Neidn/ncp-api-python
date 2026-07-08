@@ -235,3 +235,45 @@ async def test_aget_servers_top_returns_list(httpx_mock: Any) -> None:
     result = await api.aget_servers_top(query="avg_cpu_used_rto")
     assert isinstance(result, list)
     assert result[0]["instanceNo"] == "12345"
+
+
+# --- get_system_schema_key_list ---
+
+SCHEMA_KEY_LIST_RESPONSE = [
+    {"cw_key": "NCPObjectStorage", "prodName": "Object Storage"},
+    {"cw_key": "NCPLoadBalancer", "prodName": "Load Balancer Monitor(VPC)"},
+]
+
+
+def test_get_system_schema_key_list_returns_list(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SCHEMA_KEY_LIST_RESPONSE)
+    api = make_api()
+    result = api.get_system_schema_key_list()
+    assert isinstance(result, list)
+    assert result[0]["cw_key"] == "NCPObjectStorage"
+    assert result[0]["prodName"] == "Object Storage"
+
+
+def test_get_system_schema_key_list_sends_get(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SCHEMA_KEY_LIST_RESPONSE)
+    api = make_api()
+    api.get_system_schema_key_list()
+    sent = httpx_mock.get_requests()[0]
+    assert sent.method == "GET"
+
+
+def test_get_system_schema_key_list_correct_url(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SCHEMA_KEY_LIST_RESPONSE)
+    api = make_api()
+    api.get_system_schema_key_list()
+    sent = httpx_mock.get_requests()[0]
+    assert str(sent.url).startswith(f"{CI_BASE_URL}/cw_fea/real/cw/api/schema/system/list")
+
+
+@pytest.mark.asyncio
+async def test_aget_system_schema_key_list_returns_list(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SCHEMA_KEY_LIST_RESPONSE)
+    api = make_api()
+    result = await api.aget_system_schema_key_list()
+    assert isinstance(result, list)
+    assert result[1]["prodName"] == "Load Balancer Monitor(VPC)"

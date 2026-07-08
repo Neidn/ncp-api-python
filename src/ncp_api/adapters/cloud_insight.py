@@ -95,3 +95,11 @@ class CloudInsightApi(NcpHttpAdapter):
             params["prod"] = prod
         raw = await self.arequest("POST", "/servers/top", params=params)
         return cast(list[dict[str, Any]], raw)
+
+    def get_system_schema_key_list(self) -> list[dict[str, Any]]:
+        raw = self.request("GET", "/schema/system/list")
+        return cast(list[dict[str, Any]], raw)
+
+    async def aget_system_schema_key_list(self) -> list[dict[str, Any]]:
+        raw = await self.arequest("GET", "/schema/system/list")
+        return cast(list[dict[str, Any]], raw)

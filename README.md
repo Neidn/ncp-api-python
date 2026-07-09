@@ -333,22 +333,152 @@ nodes    = await client.nks.aget_worker_nodes("cluster-uuid")
 pools    = await client.nks.aget_node_pool("cluster-uuid")
 ```
 
-Regions: `"KR"` (default), `"SGN"`, `"JPN"`.
+Regions: `"KR"` (default), `"SGN"`, `"JPN"`. Gov environment additionally supports `"KRS"` (Busan).
+
+## Block Storage
+
+```python
+result = client.block_storage.get_block_storage_instance_list()
+volumes = result["blockStorageInstanceList"]
+total = result["totalRows"]
+
+# With filters
+result = client.block_storage.get_block_storage_instance_list(
+    server_instance_no="140599555",           # attached server
+    block_storage_status_code="ATTAC",        # INIT | CREAT | ATTAC | DETAC | TERMTING
+    block_storage_type_code="BASIC",          # BASIC | SSDP1 | SSDP2
+    block_storage_disk_type_code="NET",
+    block_storage_disk_detail_type_code="SSD",
+    page_no=0,
+    page_size=20,
+    sorted_by="blockStorageName",
+    sorting_order="ASC",
+)
+
+# Filter by instance numbers
+result = client.block_storage.get_block_storage_instance_list(
+    block_storage_instance_no_list=["555555", "666666"],
+)
+
+# Async
+result = await client.block_storage.aget_block_storage_instance_list(server_instance_no="140599555")
+```
+
+## VPC
+
+```python
+# VPC list
+result = client.vpc.get_vpc_list()
+vpcs = result["vpcList"]
+total = result["totalRows"]
+
+# With filters
+result = client.vpc.get_vpc_list(
+    vpc_name="my-vpc",
+    vpc_status_code="RUN",    # INIT | CREATING | RUN | TERMTING
+)
+
+# Filter by VPC numbers
+result = client.vpc.get_vpc_list(vpc_no_list=["12345", "67890"])
+
+# Async
+result = await client.vpc.aget_vpc_list()
+```
+
+```python
+# Subnet list
+result = client.vpc.get_subnet_list()
+subnets = result["subnetList"]
+total = result["totalRows"]
+
+# With filters
+result = client.vpc.get_subnet_list(
+    vpc_no="12345",
+    zone_code="KR-1",
+    subnet_type_code="PUBLIC",      # PUBLIC | PRIVATE
+    usage_type_code="GEN",          # GEN | LOADB | BM | NATGW
+    subnet_status_code="RUN",       # INIT | CREATING | RUN | TERMTING
+    subnet_name="my-subnet",
+    subnet="10.0.1.0/24",
+    network_acl_no="777",
+    page_no=0,
+    page_size=20,
+)
+
+# Filter by subnet numbers
+result = client.vpc.get_subnet_list(subnet_no_list=["99999", "88888"])
+
+# Async
+result = await client.vpc.aget_subnet_list(vpc_no="12345")
+```
+
+## Cloud DB for Cache (Redis / Valkey)
+
+NCP provides two Cache APIs: a newer unified API (`/vcache/v2`) supporting both Redis and Valkey, and a legacy Redis-only API (`/vredis/v2`).
+
+```python
+# Newer API — Redis and Valkey
+result = client.cache.get_cloud_cache_instance_list()
+instances = result["cloudCacheInstanceList"]
+total = result["totalRows"]
+
+# Filter by DBMS type
+result = client.cache.get_cloud_cache_instance_list(
+    cloud_cache_dbms_code="Redis",    # "Redis" | "Valkey"
+    vpc_no="123",
+    cloud_cache_service_name="my-cache",
+    generation_code="G3",             # "G2" | "G3"
+    page_no=0,
+    page_size=20,
+)
+
+# Filter by instance numbers
+result = client.cache.get_cloud_cache_instance_list(
+    cloud_cache_instance_no_list=["111111", "222222"],
+)
+
+# Async
+result = await client.cache.aget_cloud_cache_instance_list(cloud_cache_dbms_code="Redis")
+```
+
+```python
+# Legacy Redis-only API
+result = client.redis.get_cloud_redis_instance_list()
+instances = result["cloudRedisInstanceList"]
+total = result["totalRows"]
+
+# With filters
+result = client.redis.get_cloud_redis_instance_list(
+    vpc_no="456",
+    cloud_redis_service_name="my-redis",
+    generation_code="G2",
+    page_no=0,
+    page_size=20,
+)
+
+# Async
+result = await client.redis.aget_cloud_redis_instance_list(vpc_no="456")
+```
 
 ## Supported APIs
 
-| Service | Method | Description |
-|---------|--------|-------------|
-| Server | `get_server_instance_list` | List VPC server instances |
-| Cloud Insight | `get_system_schema_key_list` | List all services with their `cw_key` |
-| Cloud Insight | `query_data_multiple` | Query metric time-series data (up to 20 metrics) |
-| Cloud Insight | `get_servers_top` | Top 5 servers by CPU / memory / filesystem usage |
-| Cloud DB for MySQL | `get_cloud_mysql_instance_list` | List Cloud DB for MySQL instances |
-| Cloud DB for MongoDB | `get_cloud_mongodb_instance_list` | List Cloud DB for MongoDB instances |
-| Cloud DB for PostgreSQL | `get_cloud_postgresql_instance_list` | List Cloud DB for PostgreSQL instances |
-| NKS | `get_cluster_list` | List Kubernetes clusters by region |
-| NKS | `get_worker_nodes` | List worker nodes in a cluster |
-| NKS | `get_node_pool` | List node pools in a cluster |
+| Service | `client.*` | Method | Description |
+|---------|-----------|--------|-------------|
+| Server | `server` | `get_server_instance_list` | List VPC server instances |
+| Block Storage | `block_storage` | `get_block_storage_instance_list` | List block storage volumes |
+| VPC | `vpc` | `get_vpc_list` | List VPCs |
+| VPC | `vpc` | `get_subnet_list` | List subnets |
+| Cloud DB for MySQL | `mysql` | `get_cloud_mysql_instance_list` | List MySQL instances |
+| Cloud DB for MongoDB | `mongodb` | `get_cloud_mongodb_instance_list` | List MongoDB instances |
+| Cloud DB for PostgreSQL | `postgresql` | `get_cloud_postgresql_instance_list` | List PostgreSQL instances |
+| Cloud DB for Cache | `cache` | `get_cloud_cache_instance_list` | List Cache instances (Redis / Valkey) |
+| Cloud DB for Redis | `redis` | `get_cloud_redis_instance_list` | List Redis instances (legacy) |
+| NKS | `nks` | `get_cluster_list` | List Kubernetes clusters by region |
+| NKS | `nks` | `get_worker_nodes` | List worker nodes in a cluster |
+| NKS | `nks` | `get_node_pool` | List node pools in a cluster |
+| Cloud Insight | `cloud_insight` | `get_system_schema_key_list` | List all services with their `cw_key` |
+| Cloud Insight | `cloud_insight` | `query_data_multiple` | Query metric time-series data (up to 20 metrics) |
+| Cloud Insight | `cloud_insight` | `get_servers_top` | Top 5 servers by CPU / memory / filesystem usage |
 
 ## Development
 

@@ -59,7 +59,7 @@ SAMPLE_NODE_POOL_RESPONSE = {
 def make_api() -> NksApi:
     from ncp_api.auth import HmacSigner
     signer = HmacSigner("testkey", "testsecret")
-    return NksApi("https://ncloud.apigw.ntruss.com", signer)
+    return NksApi(NKS_BASE_URL, signer)
 
 
 def test_get_cluster_list_returns_list(httpx_mock: Any) -> None:
@@ -101,6 +101,14 @@ def test_get_cluster_list_region_jpn(httpx_mock: Any) -> None:
     api.get_cluster_list(region_code="JPN")
     sent = httpx_mock.get_requests()[0]
     assert "/vnks/jpn-v2/clusters" in str(sent.url)
+
+
+def test_get_cluster_list_region_krs(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RESPONSE)
+    api = make_api()
+    api.get_cluster_list(region_code="KRS")
+    sent = httpx_mock.get_requests()[0]
+    assert "/vnks/krs-v2/clusters" in str(sent.url)
 
 
 def test_get_cluster_list_region_case_insensitive(httpx_mock: Any) -> None:

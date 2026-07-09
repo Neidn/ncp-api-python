@@ -3,16 +3,23 @@ from __future__ import annotations
 from typing import Any, ClassVar, cast
 
 from ncp_api.adapters.base import NcpHttpAdapter
+from ncp_api.environment import NcpEnv
+
+NKS_BASE_URLS: dict[NcpEnv, str] = {
+    NcpEnv.PUBLIC: "https://nks.apigw.ntruss.com",
+    NcpEnv.GOV: "https://nks.apigw.gov-ntruss.com",
+    NcpEnv.FIN: "https://nks.apigw.fin-ntruss.com",
+}
 
 _REGION_PATH_PREFIX: dict[str, str] = {
     "KR": "/vnks/v2",
+    "KRS": "/vnks/krs-v2",  # Busan — gov only
     "SGN": "/vnks/sgn-v2",
     "JPN": "/vnks/jpn-v2",
 }
 
 
 class NksApi(NcpHttpAdapter):
-    _service_base_url: ClassVar[str] = "https://nks.apigw.ntruss.com"
     path_prefix: ClassVar[str] = ""
 
     def get_cluster_list(self, *, region_code: str = "KR") -> list[dict[str, Any]]:

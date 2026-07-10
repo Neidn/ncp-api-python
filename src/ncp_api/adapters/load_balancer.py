@@ -45,7 +45,11 @@ class LoadBalancerApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if load_balancer_instance_no_list:
-            params.update(_list_params("loadBalancerInstanceNoList", load_balancer_instance_no_list))
+            params.update(
+                _list_params(
+                    "loadBalancerInstanceNoList", load_balancer_instance_no_list
+                )
+            )
         return params
 
     def get_load_balancer_instance_list(

@@ -18,13 +18,16 @@ class HmacSigner:
     def secret_key(self) -> str:
         return self._secret_key
 
-    def sign(self, method: str, url: str, timestamp: int) -> dict[str, str]:
+    def sign(
+        self, method: str, url: str, timestamp: int, version: str = "v2"
+    ) -> dict[str, str]:
         """Return NCP HMAC-SHA256 auth headers for one request.
 
         Args:
             method: HTTP method in uppercase, e.g. "GET".
             url: Path + query string only, e.g. "/vserver/v2/list?region=KR".
             timestamp: Unix time in milliseconds.
+            version: Signature header version, "v2" (default) or "v1" (legacy services).
         """
         string_to_sign = f"{method} {url}\n{timestamp}\n{self._access_key}"
         mac = hmac.new(
@@ -36,5 +39,5 @@ class HmacSigner:
         return {
             "x-ncp-apigw-timestamp": str(timestamp),
             "x-ncp-iam-access-key": self._access_key,
-            "x-ncp-apigw-signature-v2": signature,
+            f"x-ncp-apigw-signature-{version}": signature,
         }

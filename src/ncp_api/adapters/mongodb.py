@@ -44,9 +44,18 @@ class CloudMongoDbApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if cloud_mongodb_instance_no_list:
-            params.update(_list_params("cloudMongoDbInstanceNoList", cloud_mongodb_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudMongoDbInstanceNoList", cloud_mongodb_instance_no_list
+                )
+            )
         if cloud_mongodb_server_instance_no_list:
-            params.update(_list_params("cloudMongoDbServerInstanceNoList", cloud_mongodb_server_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudMongoDbServerInstanceNoList",
+                    cloud_mongodb_server_instance_no_list,
+                )
+            )
         return params
 
     def get_cloud_mongodb_instance_list(

@@ -9,6 +9,7 @@ Live integration tests — only run when .env provides credentials.
 Run all:        uv run pytest tests/test_integration.py -v
 Run one:        uv run pytest tests/test_integration.py::test_live_server_list -v
 """
+
 from __future__ import annotations
 
 import pytest
@@ -91,6 +92,18 @@ def test_live_vpc_peering_list(live_client: NcpClient) -> None:
     result = live_client.vpc.get_vpc_peering_instance_list()
     assert "totalRows" in result
     assert isinstance(result.get("vpcPeeringInstanceList", []), list)
+
+
+def test_live_route_table_list(live_client: NcpClient) -> None:
+    result = live_client.vpc.get_route_table_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("routeTableList", []), list)
+
+
+def test_live_global_dns_domain_list(live_client: NcpClient) -> None:
+    result = live_client.global_dns.get_domain_list()
+    assert "totalElements" in result
+    assert isinstance(result.get("content", []), list)
 
 
 def test_live_load_balancer_list(live_client: NcpClient) -> None:

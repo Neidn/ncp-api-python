@@ -58,6 +58,7 @@ SAMPLE_NODE_POOL_RESPONSE = {
 
 def make_api() -> NksApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return NksApi(NKS_BASE_URL, signer)
 
@@ -157,6 +158,7 @@ async def test_aget_cluster_list_region_sgn(httpx_mock: Any) -> None:
 
 # --- get_worker_nodes ---
 
+
 def test_get_worker_nodes_returns_list(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_NODES_RESPONSE)
     api = make_api()
@@ -200,6 +202,7 @@ async def test_aget_worker_nodes_returns_list(httpx_mock: Any) -> None:
 
 
 # --- get_node_pool ---
+
 
 def test_get_node_pool_returns_list(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_NODE_POOL_RESPONSE)

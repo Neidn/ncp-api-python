@@ -59,7 +59,9 @@ class ServerApi(NcpHttpAdapter):
         if placement_group_no_list:
             params.update(_list_params("placementGroupNoList", placement_group_no_list))
         if hypervisor_type_code_list:
-            params.update(_list_params("hypervisorTypeCodeList", hypervisor_type_code_list))
+            params.update(
+                _list_params("hypervisorTypeCodeList", hypervisor_type_code_list)
+            )
         return params
 
     def get_server_instance_list(
@@ -179,7 +181,9 @@ class ServerApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if public_ip_instance_no_list:
-            params.update(_list_params("publicIpInstanceNoList", public_ip_instance_no_list))
+            params.update(
+                _list_params("publicIpInstanceNoList", public_ip_instance_no_list)
+            )
         return params
 
     def get_public_ip_instance_list(

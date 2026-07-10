@@ -45,7 +45,9 @@ class NasApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if nas_volume_instance_no_list:
-            params.update(_list_params("nasVolumeInstanceNoList", nas_volume_instance_no_list))
+            params.update(
+                _list_params("nasVolumeInstanceNoList", nas_volume_instance_no_list)
+            )
         return params
 
     def get_nas_volume_instance_list(

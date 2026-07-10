@@ -27,17 +27,23 @@ class NksApi(NcpHttpAdapter):
         raw = self.request("GET", f"{prefix}/clusters")
         return cast(list[dict[str, Any]], raw["clusters"])
 
-    async def aget_cluster_list(self, *, region_code: str = "KR") -> list[dict[str, Any]]:
+    async def aget_cluster_list(
+        self, *, region_code: str = "KR"
+    ) -> list[dict[str, Any]]:
         prefix = _REGION_PATH_PREFIX.get(region_code.upper(), "/vnks/v2")
         raw = await self.arequest("GET", f"{prefix}/clusters")
         return cast(list[dict[str, Any]], raw["clusters"])
 
-    def get_worker_nodes(self, uuid: str, *, region_code: str = "KR") -> list[dict[str, Any]]:
+    def get_worker_nodes(
+        self, uuid: str, *, region_code: str = "KR"
+    ) -> list[dict[str, Any]]:
         prefix = _REGION_PATH_PREFIX.get(region_code.upper(), "/vnks/v2")
         raw = self.request("GET", f"{prefix}/clusters/{uuid}/nodes")
         return cast(list[dict[str, Any]], raw["nodes"])
 
-    async def aget_worker_nodes(self, uuid: str, *, region_code: str = "KR") -> list[dict[str, Any]]:
+    async def aget_worker_nodes(
+        self, uuid: str, *, region_code: str = "KR"
+    ) -> list[dict[str, Any]]:
         prefix = _REGION_PATH_PREFIX.get(region_code.upper(), "/vnks/v2")
         raw = await self.arequest("GET", f"{prefix}/clusters/{uuid}/nodes")
         return cast(list[dict[str, Any]], raw["nodes"])
@@ -53,7 +59,9 @@ class NksApi(NcpHttpAdapter):
         params: dict[str, str] = {}
         if hypervisor_code is not None:
             params["hypervisorCode"] = hypervisor_code
-        raw = self.request("GET", f"{prefix}/clusters/{uuid}/node-pool", params=params or None)
+        raw = self.request(
+            "GET", f"{prefix}/clusters/{uuid}/node-pool", params=params or None
+        )
         return cast(list[dict[str, Any]], raw["nodePool"])
 
     async def aget_node_pool(
@@ -67,5 +75,7 @@ class NksApi(NcpHttpAdapter):
         params: dict[str, str] = {}
         if hypervisor_code is not None:
             params["hypervisorCode"] = hypervisor_code
-        raw = await self.arequest("GET", f"{prefix}/clusters/{uuid}/node-pool", params=params or None)
+        raw = await self.arequest(
+            "GET", f"{prefix}/clusters/{uuid}/node-pool", params=params or None
+        )
         return cast(list[dict[str, Any]], raw["nodePool"])

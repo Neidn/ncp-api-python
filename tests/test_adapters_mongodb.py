@@ -29,6 +29,7 @@ SAMPLE_RESPONSE = {
 
 def make_api() -> CloudMongoDbApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return CloudMongoDbApi(MONGODB_BASE_URL, signer)
 
@@ -38,7 +39,9 @@ def test_get_cloud_mongodb_instance_list_returns_response(httpx_mock: Any) -> No
     api = make_api()
     result = api.get_cloud_mongodb_instance_list()
     assert result["totalRows"] == 1
-    assert result["cloudMongoDbInstanceList"][0]["cloudMongoDbServiceName"] == "my-mongo"
+    assert (
+        result["cloudMongoDbInstanceList"][0]["cloudMongoDbServiceName"] == "my-mongo"
+    )
 
 
 def test_get_cloud_mongodb_instance_list_sends_get(httpx_mock: Any) -> None:
@@ -94,7 +97,9 @@ def test_get_cloud_mongodb_instance_list_sends_auth_headers(httpx_mock: Any) -> 
 
 
 @pytest.mark.asyncio
-async def test_aget_cloud_mongodb_instance_list_returns_response(httpx_mock: Any) -> None:
+async def test_aget_cloud_mongodb_instance_list_returns_response(
+    httpx_mock: Any,
+) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
     api = make_api()
     result = await api.aget_cloud_mongodb_instance_list()

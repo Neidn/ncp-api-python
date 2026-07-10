@@ -56,6 +56,7 @@ ERROR_RESPONSE = {
 
 def make_api() -> LoadBalancerApi:
     from ncp_api.auth import HmacSigner
+
     return LoadBalancerApi(BASE_URL, HmacSigner("testkey", "testsecret"))
 
 
@@ -128,7 +129,9 @@ def test_get_lb_list_vpc_no_param(httpx_mock: Any) -> None:
 
 def test_get_lb_list_instance_no_list_indexed(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
-    make_api().get_load_balancer_instance_list(load_balancer_instance_no_list=["123456", "789012"])
+    make_api().get_load_balancer_instance_list(
+        load_balancer_instance_no_list=["123456", "789012"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "loadBalancerInstanceNoList.1=123456" in url
@@ -146,7 +149,9 @@ def test_get_lb_list_pagination_params(httpx_mock: Any) -> None:
 
 def test_get_lb_list_sorting_params(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
-    make_api().get_load_balancer_instance_list(sorted_by="loadBalancerName", sorting_order="ASC")
+    make_api().get_load_balancer_instance_list(
+        sorted_by="loadBalancerName", sorting_order="ASC"
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "sortedBy=loadBalancerName" in url

@@ -42,9 +42,18 @@ class CloudPostgresqlApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if cloud_postgresql_instance_no_list:
-            params.update(_list_params("cloudPostgresqlInstanceNoList", cloud_postgresql_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudPostgresqlInstanceNoList", cloud_postgresql_instance_no_list
+                )
+            )
         if cloud_postgresql_server_instance_no_list:
-            params.update(_list_params("cloudPostgresqlServerInstanceNoList", cloud_postgresql_server_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudPostgresqlServerInstanceNoList",
+                    cloud_postgresql_server_instance_no_list,
+                )
+            )
         return params
 
     def get_cloud_postgresql_instance_list(
@@ -103,6 +112,8 @@ class CloudPostgresqlApi(NcpHttpAdapter):
             page_no=page_no,
             page_size=page_size,
         )
-        raw = await self.arequest("GET", "/getCloudPostgresqlInstanceList", params=params)
+        raw = await self.arequest(
+            "GET", "/getCloudPostgresqlInstanceList", params=params
+        )
         result: dict[str, Any] = raw["getCloudPostgresqlInstanceListResponse"]
         return result

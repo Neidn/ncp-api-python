@@ -32,6 +32,7 @@ SAMPLE_RESPONSE = {
 
 def make_api() -> NasApi:
     from ncp_api.auth import HmacSigner
+
     return NasApi(BASE_URL, HmacSigner("testkey", "testsecret"))
 
 

@@ -32,6 +32,7 @@ SAMPLE_RESPONSE = {
 
 def make_api() -> BlockStorageApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return BlockStorageApi(BASE_URL, signer)
 
@@ -118,7 +119,9 @@ def test_get_block_storage_instance_list_disk_type_params(httpx_mock: Any) -> No
 def test_get_block_storage_instance_list_sort_params(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
     api = make_api()
-    api.get_block_storage_instance_list(sorted_by="blockStorageName", sorting_order="ASC")
+    api.get_block_storage_instance_list(
+        sorted_by="blockStorageName", sorting_order="ASC"
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "sortedBy=blockStorageName" in url

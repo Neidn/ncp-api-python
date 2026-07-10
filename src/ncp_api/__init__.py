@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from ncp_api.client import NcpClient
 from ncp_api.environment import NcpEnv
-from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpError, NcpNetworkError, NcpRateLimitError
+from ncp_api.exceptions import (
+    NcpApiError,
+    NcpAuthError,
+    NcpError,
+    NcpNetworkError,
+    NcpRateLimitError,
+)
 
 __version__ = "0.1.0"
 

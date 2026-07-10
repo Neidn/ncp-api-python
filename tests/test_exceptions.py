@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import pytest
 
-from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpError, NcpNetworkError, NcpRateLimitError
+from ncp_api.exceptions import (
+    NcpApiError,
+    NcpAuthError,
+    NcpError,
+    NcpNetworkError,
+    NcpRateLimitError,
+)
 
 
 def test_ncp_error_is_exception() -> None:

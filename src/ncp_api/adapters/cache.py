@@ -48,9 +48,16 @@ class CloudCacheApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if cloud_cache_instance_no_list:
-            params.update(_list_params("cloudCacheInstanceNoList", cloud_cache_instance_no_list))
+            params.update(
+                _list_params("cloudCacheInstanceNoList", cloud_cache_instance_no_list)
+            )
         if cloud_cache_server_instance_no_list:
-            params.update(_list_params("cloudCacheServerInstanceNoList", cloud_cache_server_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudCacheServerInstanceNoList",
+                    cloud_cache_server_instance_no_list,
+                )
+            )
         return params
 
     def get_cloud_cache_instance_list(
@@ -155,9 +162,16 @@ class CloudRedisApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if cloud_redis_instance_no_list:
-            params.update(_list_params("cloudRedisInstanceNoList", cloud_redis_instance_no_list))
+            params.update(
+                _list_params("cloudRedisInstanceNoList", cloud_redis_instance_no_list)
+            )
         if cloud_redis_server_instance_no_list:
-            params.update(_list_params("cloudRedisServerInstanceNoList", cloud_redis_server_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudRedisServerInstanceNoList",
+                    cloud_redis_server_instance_no_list,
+                )
+            )
         return params
 
     def get_cloud_redis_instance_list(

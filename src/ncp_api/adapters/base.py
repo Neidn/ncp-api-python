@@ -8,12 +8,18 @@ from urllib.parse import urlencode
 import httpx
 
 from ncp_api.auth import HmacSigner
-from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpNetworkError, NcpRateLimitError
+from ncp_api.exceptions import (
+    NcpApiError,
+    NcpAuthError,
+    NcpNetworkError,
+    NcpRateLimitError,
+)
 
 
 class NcpHttpAdapter:
     path_prefix: ClassVar[str] = ""
     _service_base_url: ClassVar[str | None] = None
+    _signature_version: ClassVar[str] = "v2"
 
     def __init__(self, env_base_url: str, signer: HmacSigner) -> None:
         self._env_base_url = env_base_url
@@ -34,7 +40,9 @@ class NcpHttpAdapter:
         if parsed.query:
             sign_target = f"{parsed.path}?{parsed.query.decode('utf-8')}"
         timestamp = int(time.time() * 1000)
-        return self._signer.sign(method.upper(), sign_target, timestamp)
+        return self._signer.sign(
+            method.upper(), sign_target, timestamp, self._signature_version
+        )
 
     def _handle_response(self, response: httpx.Response) -> dict[str, Any]:
         if response.is_error:
@@ -45,9 +53,7 @@ class NcpHttpAdapter:
             error_code = str(
                 body.get("returnCode", body.get("errorCode", str(response.status_code)))
             )
-            message = str(
-                body.get("returnMessage", body.get("message", response.text))
-            )
+            message = str(body.get("returnMessage", body.get("message", response.text)))
             if response.status_code == 401:
                 raise NcpAuthError(message, error_code=error_code)
             if response.status_code == 429:
@@ -71,7 +77,9 @@ class NcpHttpAdapter:
 
     def request(self, method: str, path: str, **kwargs: Any) -> dict[str, Any]:
         url = self._resolve_url(path)
-        auth_headers = self._make_auth_headers(method, self._sign_url(url, kwargs.get("params")))
+        auth_headers = self._make_auth_headers(
+            method, self._sign_url(url, kwargs.get("params"))
+        )
         try:
             response = self._client.request(
                 method=method.upper(),
@@ -89,7 +97,9 @@ class NcpHttpAdapter:
 
     async def arequest(self, method: str, path: str, **kwargs: Any) -> dict[str, Any]:
         url = self._resolve_url(path)
-        auth_headers = self._make_auth_headers(method, self._sign_url(url, kwargs.get("params")))
+        auth_headers = self._make_auth_headers(
+            method, self._sign_url(url, kwargs.get("params"))
+        )
         try:
             response = await self._async_client.request(
                 method=method.upper(),

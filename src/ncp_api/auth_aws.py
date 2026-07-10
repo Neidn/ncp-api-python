@@ -43,28 +43,30 @@ class AwsSigV4Signer:
 
         payload_hash = hashlib.sha256(payload).hexdigest()
         canonical_headers = (
-            f"host:{host}\n"
-            f"x-amz-content-sha256:{payload_hash}\n"
-            f"x-amz-date:{amz_date}\n"
+            f"host:{host}\nx-amz-content-sha256:{payload_hash}\nx-amz-date:{amz_date}\n"
         )
         signed_headers = "host;x-amz-content-sha256;x-amz-date"
 
-        canonical_request = "\n".join([
-            method.upper(),
-            path or "/",
-            query_string,
-            canonical_headers,
-            signed_headers,
-            payload_hash,
-        ])
+        canonical_request = "\n".join(
+            [
+                method.upper(),
+                path or "/",
+                query_string,
+                canonical_headers,
+                signed_headers,
+                payload_hash,
+            ]
+        )
 
         credential_scope = f"{date_str}/{self._region}/{self._service}/aws4_request"
-        string_to_sign = "\n".join([
-            "AWS4-HMAC-SHA256",
-            amz_date,
-            credential_scope,
-            hashlib.sha256(canonical_request.encode("utf-8")).hexdigest(),
-        ])
+        string_to_sign = "\n".join(
+            [
+                "AWS4-HMAC-SHA256",
+                amz_date,
+                credential_scope,
+                hashlib.sha256(canonical_request.encode("utf-8")).hexdigest(),
+            ]
+        )
 
         signature = hmac.new(
             self._signing_key(date_str),

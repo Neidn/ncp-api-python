@@ -46,15 +46,18 @@ SAMPLE_REDIS_RESPONSE = {
 
 def make_cache_api() -> CloudCacheApi:
     from ncp_api.auth import HmacSigner
+
     return CloudCacheApi(BASE_URL, HmacSigner("testkey", "testsecret"))
 
 
 def make_redis_api() -> CloudRedisApi:
     from ncp_api.auth import HmacSigner
+
     return CloudRedisApi(BASE_URL, HmacSigner("testkey", "testsecret"))
 
 
 # --- CloudCacheApi ---
+
 
 def test_get_cloud_cache_instance_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_CACHE_RESPONSE)
@@ -100,7 +103,9 @@ def test_get_cloud_cache_instance_list_with_filters(httpx_mock: Any) -> None:
 
 def test_get_cloud_cache_instance_no_list_param(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_CACHE_RESPONSE)
-    make_cache_api().get_cloud_cache_instance_list(cloud_cache_instance_no_list=["111", "222"])
+    make_cache_api().get_cloud_cache_instance_list(
+        cloud_cache_instance_no_list=["111", "222"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "cloudCacheInstanceNoList.1=111" in url
@@ -109,7 +114,9 @@ def test_get_cloud_cache_instance_no_list_param(httpx_mock: Any) -> None:
 
 def test_get_cloud_cache_server_instance_no_list_param(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_CACHE_RESPONSE)
-    make_cache_api().get_cloud_cache_instance_list(cloud_cache_server_instance_no_list=["aaa", "bbb"])
+    make_cache_api().get_cloud_cache_instance_list(
+        cloud_cache_server_instance_no_list=["aaa", "bbb"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "cloudCacheServerInstanceNoList.1=aaa" in url
@@ -134,6 +141,7 @@ async def test_aget_cloud_cache_instance_list_returns_dict(httpx_mock: Any) -> N
 
 
 # --- CloudRedisApi ---
+
 
 def test_get_cloud_redis_instance_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_REDIS_RESPONSE)
@@ -170,7 +178,9 @@ def test_get_cloud_redis_instance_list_with_filters(httpx_mock: Any) -> None:
 
 def test_get_cloud_redis_instance_no_list_param(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_REDIS_RESPONSE)
-    make_redis_api().get_cloud_redis_instance_list(cloud_redis_instance_no_list=["333", "444"])
+    make_redis_api().get_cloud_redis_instance_list(
+        cloud_redis_instance_no_list=["333", "444"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "cloudRedisInstanceNoList.1=333" in url

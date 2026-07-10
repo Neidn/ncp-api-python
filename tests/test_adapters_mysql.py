@@ -29,6 +29,7 @@ SAMPLE_RESPONSE = {
 
 def make_api() -> CloudMysqlApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return CloudMysqlApi(MYSQL_BASE_URL, signer)
 

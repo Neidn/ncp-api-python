@@ -76,7 +76,12 @@ async with NcpClient(access_key="KEY", secret_key="SECRET") as client:
 | VPC | `vpc` | `get_subnet_list` | [→](https://api.ncloud-docs.com/docs/networking-vpc-subnet-getsubnetlist) |
 | VPC | `vpc` | `get_nat_gateway_instance_list` | [→](https://api.ncloud-docs.com/docs/networking-vpc-natgateway-getnatgatewayinstancelist) |
 | VPC | `vpc` | `get_vpc_peering_instance_list` | [→](https://api.ncloud-docs.com/docs/networking-vpc-vpcpeering-getvpcpeeringinstancelist) |
+| VPC | `vpc` | `get_route_table_list` | [→](https://api.ncloud-docs.com/docs/networking-vpc-routetable-getroutetablelist) |
+| VPC | `vpc` | `get_route_table_subnet_list` | [→](https://api.ncloud-docs.com/docs/networking-vpc-routetable-getroutetablesubnetlist) |
+| VPC | `vpc` | `get_route_list` | [→](https://api.ncloud-docs.com/docs/networking-vpc-routetable-getroutelist) |
 | Load Balancer | `load_balancer` | `get_load_balancer_instance_list` | [→](https://api.ncloud-docs.com/docs/networking-vloadbalancer-loadbalancer-getloadbalancerinstancelist) |
+| Global DNS | `global_dns` | `get_domain_list` | [→](https://api.ncloud-docs.com/docs/networking-globaldns-record-getdomainlist) |
+| Global DNS | `global_dns` | `get_record_list` | [→](https://api.ncloud-docs.com/docs/networking-globaldns-record-getrecordlist) |
 | Cloud DB for MySQL | `mysql` | `get_cloud_mysql_instance_list` | [→](https://api.ncloud-docs.com/docs/database-clouddbformysql-getcloudmysqlinstancelist) |
 | Cloud DB for MongoDB | `mongodb` | `get_cloud_mongodb_instance_list` | [→](https://api.ncloud-docs.com/docs/database-clouddbformongodb-getcloudmongodbinstancelist) |
 | Cloud DB for PostgreSQL | `postgresql` | `get_cloud_postgresql_instance_list` | [→](https://api.ncloud-docs.com/docs/database-clouddbforpostgresql-getcloudpostgresqlinstancelist) |

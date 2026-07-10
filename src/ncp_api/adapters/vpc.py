@@ -205,7 +205,9 @@ class VpcApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if nat_gateway_instance_no_list:
-            params.update(_list_params("natGatewayInstanceNoList", nat_gateway_instance_no_list))
+            params.update(
+                _list_params("natGatewayInstanceNoList", nat_gateway_instance_no_list)
+            )
         return params
 
     def get_nat_gateway_instance_list(
@@ -297,7 +299,9 @@ class VpcApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if vpc_peering_instance_no_list:
-            params.update(_list_params("vpcPeeringInstanceNoList", vpc_peering_instance_no_list))
+            params.update(
+                _list_params("vpcPeeringInstanceNoList", vpc_peering_instance_no_list)
+            )
         return params
 
     def get_vpc_peering_instance_list(
@@ -358,4 +362,224 @@ class VpcApi(NcpHttpAdapter):
         )
         raw = await self.arequest("GET", "/getVpcPeeringInstanceList", params=params)
         result: dict[str, Any] = raw["getVpcPeeringInstanceListResponse"]
+        return result
+
+    # --- Route Table ---
+
+    def _get_route_table_params(
+        self,
+        *,
+        region_code: str | None,
+        route_table_no_list: list[str] | None,
+        route_table_name: str | None,
+        route_table_status_code: str | None,
+        route_table_type_code: str | None,
+        vpc_no: str | None,
+        supported_subnet_type_code: str | None,
+        page_no: int | None,
+        page_size: int | None,
+        sorted_by: str | None,
+        sorting_order: str | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            routeTableName=route_table_name,
+            routeTableStatusCode=route_table_status_code,
+            routeTableTypeCode=route_table_type_code,
+            vpcNo=vpc_no,
+            supportedSubnetTypeCode=supported_subnet_type_code,
+            pageNo=page_no,
+            pageSize=page_size,
+            sortedBy=sorted_by,
+            sortingOrder=sorting_order,
+            responseFormatType="json",
+        )
+        if route_table_no_list:
+            params.update(_list_params("routeTableNoList", route_table_no_list))
+        return params
+
+    def get_route_table_list(
+        self,
+        *,
+        region_code: str | None = None,
+        route_table_no_list: list[str] | None = None,
+        route_table_name: str | None = None,
+        route_table_status_code: str | None = None,
+        route_table_type_code: str | None = None,
+        vpc_no: str | None = None,
+        supported_subnet_type_code: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sorted_by: str | None = None,
+        sorting_order: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_route_table_params(
+            region_code=region_code,
+            route_table_no_list=route_table_no_list,
+            route_table_name=route_table_name,
+            route_table_status_code=route_table_status_code,
+            route_table_type_code=route_table_type_code,
+            vpc_no=vpc_no,
+            supported_subnet_type_code=supported_subnet_type_code,
+            page_no=page_no,
+            page_size=page_size,
+            sorted_by=sorted_by,
+            sorting_order=sorting_order,
+        )
+        raw = self.request("GET", "/getRouteTableList", params=params)
+        result: dict[str, Any] = raw["getRouteTableListResponse"]
+        return result
+
+    async def aget_route_table_list(
+        self,
+        *,
+        region_code: str | None = None,
+        route_table_no_list: list[str] | None = None,
+        route_table_name: str | None = None,
+        route_table_status_code: str | None = None,
+        route_table_type_code: str | None = None,
+        vpc_no: str | None = None,
+        supported_subnet_type_code: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sorted_by: str | None = None,
+        sorting_order: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_route_table_params(
+            region_code=region_code,
+            route_table_no_list=route_table_no_list,
+            route_table_name=route_table_name,
+            route_table_status_code=route_table_status_code,
+            route_table_type_code=route_table_type_code,
+            vpc_no=vpc_no,
+            supported_subnet_type_code=supported_subnet_type_code,
+            page_no=page_no,
+            page_size=page_size,
+            sorted_by=sorted_by,
+            sorting_order=sorting_order,
+        )
+        raw = await self.arequest("GET", "/getRouteTableList", params=params)
+        result: dict[str, Any] = raw["getRouteTableListResponse"]
+        return result
+
+    # --- Route Table Subnet ---
+
+    def _get_route_table_subnet_params(
+        self,
+        *,
+        region_code: str | None,
+        route_table_no: str,
+        subnet_no_list: list[str] | None,
+        page_no: int | None,
+        page_size: int | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            routeTableNo=route_table_no,
+            pageNo=page_no,
+            pageSize=page_size,
+            responseFormatType="json",
+        )
+        if subnet_no_list:
+            params.update(_list_params("subnetNoList", subnet_no_list))
+        return params
+
+    def get_route_table_subnet_list(
+        self,
+        route_table_no: str,
+        *,
+        region_code: str | None = None,
+        subnet_no_list: list[str] | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_route_table_subnet_params(
+            region_code=region_code,
+            route_table_no=route_table_no,
+            subnet_no_list=subnet_no_list,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = self.request("GET", "/getRouteTableSubnetList", params=params)
+        result: dict[str, Any] = raw["getRouteTableSubnetListResponse"]
+        return result
+
+    async def aget_route_table_subnet_list(
+        self,
+        route_table_no: str,
+        *,
+        region_code: str | None = None,
+        subnet_no_list: list[str] | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_route_table_subnet_params(
+            region_code=region_code,
+            route_table_no=route_table_no,
+            subnet_no_list=subnet_no_list,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = await self.arequest("GET", "/getRouteTableSubnetList", params=params)
+        result: dict[str, Any] = raw["getRouteTableSubnetListResponse"]
+        return result
+
+    # --- Route ---
+
+    def _get_route_params(
+        self,
+        *,
+        region_code: str | None,
+        route_table_no: str,
+        destination_cidr_block: str | None,
+        page_no: int | None,
+        page_size: int | None,
+    ) -> dict[str, str]:
+        return _build_params(
+            regionCode=region_code,
+            routeTableNo=route_table_no,
+            destinationCidrBlock=destination_cidr_block,
+            pageNo=page_no,
+            pageSize=page_size,
+            responseFormatType="json",
+        )
+
+    def get_route_list(
+        self,
+        route_table_no: str,
+        *,
+        region_code: str | None = None,
+        destination_cidr_block: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_route_params(
+            region_code=region_code,
+            route_table_no=route_table_no,
+            destination_cidr_block=destination_cidr_block,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = self.request("GET", "/getRouteList", params=params)
+        result: dict[str, Any] = raw["getRouteListResponse"]
+        return result
+
+    async def aget_route_list(
+        self,
+        route_table_no: str,
+        *,
+        region_code: str | None = None,
+        destination_cidr_block: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_route_params(
+            region_code=region_code,
+            route_table_no=route_table_no,
+            destination_cidr_block=destination_cidr_block,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = await self.arequest("GET", "/getRouteList", params=params)
+        result: dict[str, Any] = raw["getRouteListResponse"]
         return result

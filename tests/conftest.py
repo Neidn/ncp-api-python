@@ -9,6 +9,7 @@ import pytest
 _env_file = Path(__file__).parent.parent / ".env"
 if _env_file.exists():
     from dotenv import load_dotenv
+
     load_dotenv(_env_file)
 
 
@@ -23,6 +24,7 @@ def live_client():
         pytest.skip("NCP_ACCESS_KEY / NCP_SECRET_KEY not set — skipping live test")
 
     from ncp_api.client import NcpClient
+
     client = NcpClient(access_key=access_key, secret_key=secret_key, env=env)
     yield client
     client.close()

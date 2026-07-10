@@ -116,7 +116,9 @@ async def test_aget_server_instance_list_returns_inner_response(
 async def test_aget_server_instance_list_with_filters(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
     api = make_server_api()
-    await api.aget_server_instance_list(server_name="async-server", page_no=0, page_size=5)
+    await api.aget_server_instance_list(
+        server_name="async-server", page_no=0, page_size=5
+    )
     sent = httpx_mock.get_requests()[0]
     url_str = str(sent.url)
     assert "serverName=async-server" in url_str
@@ -221,7 +223,9 @@ def test_get_public_ip_list_server_instance_no_param(httpx_mock: Any) -> None:
 
 def test_get_public_ip_list_instance_no_list_indexed(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
-    make_server_api().get_public_ip_instance_list(public_ip_instance_no_list=["111", "222"])
+    make_server_api().get_public_ip_instance_list(
+        public_ip_instance_no_list=["111", "222"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "publicIpInstanceNoList.1=111" in url
@@ -239,7 +243,9 @@ def test_get_public_ip_list_pagination_params(httpx_mock: Any) -> None:
 
 def test_get_public_ip_list_sorting_params(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
-    make_server_api().get_public_ip_instance_list(sorted_by="publicIp", sorting_order="ASC")
+    make_server_api().get_public_ip_instance_list(
+        sorted_by="publicIp", sorting_order="ASC"
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "sortedBy=publicIp" in url

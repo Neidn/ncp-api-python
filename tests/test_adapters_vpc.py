@@ -50,11 +50,13 @@ SAMPLE_SUBNET_RESPONSE = {
 
 def make_api() -> VpcApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return VpcApi(BASE_URL, signer)
 
 
 # --- get_vpc_list ---
+
 
 def test_get_vpc_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_VPC_RESPONSE)
@@ -129,6 +131,7 @@ async def test_aget_vpc_list_returns_dict(httpx_mock: Any) -> None:
 
 
 # --- get_subnet_list ---
+
 
 def test_get_subnet_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_SUBNET_RESPONSE)
@@ -298,7 +301,9 @@ def test_get_nat_gateway_list_subnet_no_param(httpx_mock: Any) -> None:
 
 def test_get_nat_gateway_list_instance_no_list_indexed(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_NAT_GATEWAY_RESPONSE)
-    make_api().get_nat_gateway_instance_list(nat_gateway_instance_no_list=["55555", "66666"])
+    make_api().get_nat_gateway_instance_list(
+        nat_gateway_instance_no_list=["55555", "66666"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "natGatewayInstanceNoList.1=55555" in url
@@ -316,7 +321,9 @@ def test_get_nat_gateway_list_pagination_params(httpx_mock: Any) -> None:
 
 def test_get_nat_gateway_list_sorting_params(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_NAT_GATEWAY_RESPONSE)
-    make_api().get_nat_gateway_instance_list(sorted_by="natGatewayName", sorting_order="DESC")
+    make_api().get_nat_gateway_instance_list(
+        sorted_by="natGatewayName", sorting_order="DESC"
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "sortedBy=natGatewayName" in url
@@ -426,7 +433,9 @@ def test_get_vpc_peering_list_target_vpc_param(httpx_mock: Any) -> None:
 
 def test_get_vpc_peering_list_instance_no_list_indexed(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_VPC_PEERING_RESPONSE)
-    make_api().get_vpc_peering_instance_list(vpc_peering_instance_no_list=["77777", "88888"])
+    make_api().get_vpc_peering_instance_list(
+        vpc_peering_instance_no_list=["77777", "88888"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "vpcPeeringInstanceNoList.1=77777" in url
@@ -444,7 +453,9 @@ def test_get_vpc_peering_list_pagination_params(httpx_mock: Any) -> None:
 
 def test_get_vpc_peering_list_sorting_params(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_VPC_PEERING_RESPONSE)
-    make_api().get_vpc_peering_instance_list(sorted_by="vpcPeeringName", sorting_order="ASC")
+    make_api().get_vpc_peering_instance_list(
+        sorted_by="vpcPeeringName", sorting_order="ASC"
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "sortedBy=vpcPeeringName" in url
@@ -464,3 +475,239 @@ async def test_aget_vpc_peering_list_returns_dict(httpx_mock: Any) -> None:
     result = await make_api().aget_vpc_peering_instance_list()
     assert isinstance(result, dict)
     assert result["vpcPeeringInstanceList"][0]["vpcPeeringName"] == "my-peering"
+
+
+# --- get_route_table_list ---
+
+SAMPLE_ROUTE_TABLE_RESPONSE = {
+    "getRouteTableListResponse": {
+        "requestId": "req-rt-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "routeTableList": [
+            {
+                "routeTableNo": "11111",
+                "routeTableName": "my-rt",
+                "routeTableStatusCode": "RUN",
+                "routeTableTypeCode": "CUSTOM",
+                "vpcNo": "12345",
+                "supportedSubnetTypeCode": "PUBLIC",
+            }
+        ],
+    }
+}
+
+EMPTY_ROUTE_TABLE_RESPONSE = {
+    "getRouteTableListResponse": {
+        "requestId": "req-rt-002",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 0,
+        "routeTableList": [],
+    }
+}
+
+
+def test_get_route_table_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    result = make_api().get_route_table_list()
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+
+
+def test_get_route_table_list_data(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    result = make_api().get_route_table_list()
+    rt = result["routeTableList"][0]
+    assert rt["routeTableName"] == "my-rt"
+    assert rt["routeTableTypeCode"] == "CUSTOM"
+
+
+def test_get_route_table_list_correct_path(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    make_api().get_route_table_list()
+    sent = httpx_mock.get_requests()[0]
+    assert sent.method == "GET"
+    assert "/vpc/v2/getRouteTableList" in str(sent.url)
+
+
+def test_get_route_table_list_name_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    make_api().get_route_table_list(route_table_name="my-rt")
+    assert "routeTableName=my-rt" in str(httpx_mock.get_requests()[0].url)
+
+
+def test_get_route_table_list_type_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    make_api().get_route_table_list(route_table_type_code="CUSTOM")
+    assert "routeTableTypeCode=CUSTOM" in str(httpx_mock.get_requests()[0].url)
+
+
+def test_get_route_table_list_vpc_no_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    make_api().get_route_table_list(vpc_no="12345")
+    assert "vpcNo=12345" in str(httpx_mock.get_requests()[0].url)
+
+
+def test_get_route_table_list_subnet_type_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    make_api().get_route_table_list(supported_subnet_type_code="PUBLIC")
+    assert "supportedSubnetTypeCode=PUBLIC" in str(httpx_mock.get_requests()[0].url)
+
+
+def test_get_route_table_list_no_list_indexed(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    make_api().get_route_table_list(route_table_no_list=["11111", "22222"])
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "routeTableNoList.1=11111" in url
+    assert "routeTableNoList.2=22222" in url
+
+
+def test_get_route_table_list_empty(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=EMPTY_ROUTE_TABLE_RESPONSE)
+    result = make_api().get_route_table_list()
+    assert result["totalRows"] == 0
+    assert result["routeTableList"] == []
+
+
+@pytest.mark.asyncio
+async def test_aget_route_table_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_TABLE_RESPONSE)
+    result = await make_api().aget_route_table_list(vpc_no="12345")
+    assert isinstance(result, dict)
+    assert result["routeTableList"][0]["routeTableNo"] == "11111"
+
+
+# --- get_route_table_subnet_list ---
+
+SAMPLE_RT_SUBNET_RESPONSE = {
+    "getRouteTableSubnetListResponse": {
+        "requestId": "req-rts-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "routeTableSubnetList": [
+            {
+                "subnetNo": "99999",
+                "subnetName": "my-subnet",
+                "subnet": "10.0.1.0/24",
+                "subnetTypeCode": "PUBLIC",
+            }
+        ],
+    }
+}
+
+
+def test_get_route_table_subnet_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RT_SUBNET_RESPONSE)
+    result = make_api().get_route_table_subnet_list("11111")
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+
+
+def test_get_route_table_subnet_list_correct_path(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RT_SUBNET_RESPONSE)
+    make_api().get_route_table_subnet_list("11111")
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getRouteTableSubnetList" in str(sent.url)
+    assert "routeTableNo=11111" in str(sent.url)
+
+
+def test_get_route_table_subnet_list_subnet_no_list_indexed(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RT_SUBNET_RESPONSE)
+    make_api().get_route_table_subnet_list("11111", subnet_no_list=["99999", "88888"])
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "subnetNoList.1=99999" in url
+    assert "subnetNoList.2=88888" in url
+
+
+def test_get_route_table_subnet_list_pagination_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RT_SUBNET_RESPONSE)
+    make_api().get_route_table_subnet_list("11111", page_no=0, page_size=10)
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "pageNo=0" in url
+    assert "pageSize=10" in url
+
+
+@pytest.mark.asyncio
+async def test_aget_route_table_subnet_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RT_SUBNET_RESPONSE)
+    result = await make_api().aget_route_table_subnet_list("11111")
+    assert isinstance(result, dict)
+    assert result["routeTableSubnetList"][0]["subnetName"] == "my-subnet"
+
+
+# --- get_route_list ---
+
+SAMPLE_ROUTE_RESPONSE = {
+    "getRouteListResponse": {
+        "requestId": "req-route-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 2,
+        "routeList": [
+            {
+                "destinationCidrBlock": "0.0.0.0/0",
+                "targetName": "INTERNET_GATEWAY",
+                "targetNo": "igw-001",
+                "routeTableNo": "11111",
+            },
+            {
+                "destinationCidrBlock": "10.0.0.0/16",
+                "targetName": "LOCAL",
+                "targetNo": None,
+                "routeTableNo": "11111",
+            },
+        ],
+    }
+}
+
+
+def test_get_route_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
+    result = make_api().get_route_list("11111")
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 2
+
+
+def test_get_route_list_correct_path(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
+    make_api().get_route_list("11111")
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getRouteList" in str(sent.url)
+    assert "routeTableNo=11111" in str(sent.url)
+
+
+def test_get_route_list_data(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
+    result = make_api().get_route_list("11111")
+    routes = result["routeList"]
+    assert routes[0]["destinationCidrBlock"] == "0.0.0.0/0"
+    assert routes[1]["destinationCidrBlock"] == "10.0.0.0/16"
+
+
+def test_get_route_list_cidr_filter(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
+    make_api().get_route_list("11111", destination_cidr_block="0.0.0.0/0")
+    url = str(httpx_mock.get_requests()[0].url)
+    assert (
+        "destinationCidrBlock=0.0.0.0%2F0" in url
+        or "destinationCidrBlock=0.0.0.0/0" in url
+    )
+
+
+def test_get_route_list_pagination_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
+    make_api().get_route_list("11111", page_no=1, page_size=50)
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "pageNo=1" in url
+    assert "pageSize=50" in url
+
+
+@pytest.mark.asyncio
+async def test_aget_route_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
+    result = await make_api().aget_route_list("11111")
+    assert isinstance(result, dict)
+    assert len(result["routeList"]) == 2

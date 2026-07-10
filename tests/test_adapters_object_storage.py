@@ -51,11 +51,14 @@ ERROR_XML = """\
 
 def make_api() -> ObjectStorageApi:
     from ncp_api.auth import HmacSigner
+
     return ObjectStorageApi(BASE_URL, HmacSigner("testkey", "testsecret"))
 
 
 def test_list_buckets_returns_dict(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_buckets()
     assert isinstance(result, dict)
     assert "owner" in result
@@ -63,14 +66,18 @@ def test_list_buckets_returns_dict(httpx_mock: Any) -> None:
 
 
 def test_list_buckets_owner_fields(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_buckets()
     assert result["owner"]["id"] == "user123"
     assert result["owner"]["displayName"] == "testuser"
 
 
 def test_list_buckets_bucket_list(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_buckets()
     assert len(result["buckets"]) == 2
     assert result["buckets"][0]["name"] == "my-bucket"
@@ -79,7 +86,9 @@ def test_list_buckets_bucket_list(httpx_mock: Any) -> None:
 
 
 def test_list_buckets_correct_url(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_buckets()
     sent = httpx_mock.get_requests()[0]
     assert sent.method == "GET"
@@ -87,7 +96,9 @@ def test_list_buckets_correct_url(httpx_mock: Any) -> None:
 
 
 def test_list_buckets_aws_auth_headers(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_buckets()
     sent = httpx_mock.get_requests()[0]
     assert "Authorization" in sent.headers
@@ -97,7 +108,9 @@ def test_list_buckets_aws_auth_headers(httpx_mock: Any) -> None:
 
 
 def test_list_buckets_auth_contains_credential(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_buckets()
     sent = httpx_mock.get_requests()[0]
     auth = sent.headers["Authorization"]
@@ -107,7 +120,9 @@ def test_list_buckets_auth_contains_credential(httpx_mock: Any) -> None:
 
 
 def test_list_buckets_empty(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=EMPTY_BUCKETS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=EMPTY_BUCKETS_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_buckets()
     assert result["buckets"] == []
     assert result["owner"]["id"] == "user123"
@@ -127,14 +142,19 @@ def test_list_buckets_error_xml_parsed(httpx_mock: Any) -> None:
 
 
 def test_list_buckets_500_raises_api_error(httpx_mock: Any) -> None:
-    httpx_mock.add_response(status_code=500, text="<Error><Code>InternalError</Code><Message>Internal Server Error</Message></Error>")
+    httpx_mock.add_response(
+        status_code=500,
+        text="<Error><Code>InternalError</Code><Message>Internal Server Error</Message></Error>",
+    )
     with pytest.raises(NcpApiError):
         make_api().list_buckets()
 
 
 @pytest.mark.asyncio
 async def test_alist_buckets_returns_dict(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_XML, headers={"Content-Type": "application/xml"}
+    )
     result = await make_api().alist_buckets()
     assert isinstance(result, dict)
     assert len(result["buckets"]) == 2
@@ -218,14 +238,18 @@ TRUNCATED_XML = """\
 
 
 def test_list_objects_returns_dict(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_objects("my-bucket")
     assert isinstance(result, dict)
     assert result["name"] == "my-bucket"
 
 
 def test_list_objects_contents(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_objects("my-bucket")
     assert len(result["contents"]) == 2
     obj = result["contents"][0]
@@ -236,62 +260,80 @@ def test_list_objects_contents(httpx_mock: Any) -> None:
 
 
 def test_list_objects_correct_path(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_objects("my-bucket")
     sent = httpx_mock.get_requests()[0]
     assert "/my-bucket" in str(sent.url)
 
 
 def test_list_objects_prefix_param(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_objects("my-bucket", prefix="subdir/")
     sent = httpx_mock.get_requests()[0]
     assert "prefix=subdir" in str(sent.url)
 
 
 def test_list_objects_max_keys_param(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_objects("my-bucket", max_keys=50)
     sent = httpx_mock.get_requests()[0]
     assert "max-keys=50" in str(sent.url)
 
 
 def test_list_objects_marker_param(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_objects("my-bucket", marker="file1.txt")
     sent = httpx_mock.get_requests()[0]
     assert "marker=file1.txt" in str(sent.url)
 
 
 def test_list_objects_delimiter_param(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_DELIMITED_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_DELIMITED_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_objects("my-bucket", delimiter="/")
     sent = httpx_mock.get_requests()[0]
     assert "delimiter=" in str(sent.url)
 
 
 def test_list_objects_common_prefixes(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_DELIMITED_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_DELIMITED_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_objects("my-bucket", delimiter="/")
     assert result["commonPrefixes"] == ["subdir/"]
     assert result["delimiter"] == "/"
 
 
 def test_list_objects_is_truncated_false(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_objects("my-bucket")
     assert result["isTruncated"] is False
 
 
 def test_list_objects_is_truncated_true(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=TRUNCATED_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=TRUNCATED_XML, headers={"Content-Type": "application/xml"}
+    )
     result = make_api().list_objects("my-bucket", max_keys=1)
     assert result["isTruncated"] is True
     assert result["maxKeys"] == 1
 
 
 def test_list_objects_aws_auth_headers(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     make_api().list_objects("my-bucket")
     sent = httpx_mock.get_requests()[0]
     assert sent.headers["Authorization"].startswith("AWS4-HMAC-SHA256")
@@ -300,7 +342,9 @@ def test_list_objects_aws_auth_headers(httpx_mock: Any) -> None:
 
 @pytest.mark.asyncio
 async def test_alist_objects_returns_dict(httpx_mock: Any) -> None:
-    httpx_mock.add_response(text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"})
+    httpx_mock.add_response(
+        text=SAMPLE_OBJECTS_XML, headers={"Content-Type": "application/xml"}
+    )
     result = await make_api().alist_objects("my-bucket", prefix="subdir/")
     assert isinstance(result, dict)
     assert result["name"] == "my-bucket"

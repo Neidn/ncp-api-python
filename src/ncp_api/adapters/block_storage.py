@@ -47,7 +47,11 @@ class BlockStorageApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if block_storage_instance_no_list:
-            params.update(_list_params("blockStorageInstanceNoList", block_storage_instance_no_list))
+            params.update(
+                _list_params(
+                    "blockStorageInstanceNoList", block_storage_instance_no_list
+                )
+            )
         return params
 
     def get_block_storage_instance_list(

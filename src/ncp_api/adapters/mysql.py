@@ -44,9 +44,16 @@ class CloudMysqlApi(NcpHttpAdapter):
             responseFormatType="json",
         )
         if cloud_mysql_instance_no_list:
-            params.update(_list_params("cloudMysqlInstanceNoList", cloud_mysql_instance_no_list))
+            params.update(
+                _list_params("cloudMysqlInstanceNoList", cloud_mysql_instance_no_list)
+            )
         if cloud_mysql_server_instance_no_list:
-            params.update(_list_params("cloudMysqlServerInstanceNoList", cloud_mysql_server_instance_no_list))
+            params.update(
+                _list_params(
+                    "cloudMysqlServerInstanceNoList",
+                    cloud_mysql_server_instance_no_list,
+                )
+            )
         return params
 
     def get_cloud_mysql_instance_list(

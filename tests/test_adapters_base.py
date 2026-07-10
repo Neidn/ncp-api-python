@@ -7,7 +7,12 @@ import pytest
 
 from ncp_api.adapters.base import NcpHttpAdapter
 from ncp_api.auth import HmacSigner
-from ncp_api.exceptions import NcpApiError, NcpAuthError, NcpNetworkError, NcpRateLimitError
+from ncp_api.exceptions import (
+    NcpApiError,
+    NcpAuthError,
+    NcpNetworkError,
+    NcpRateLimitError,
+)
 
 
 def make_adapter(base_url: str = "https://ncloud.apigw.ntruss.com") -> NcpHttpAdapter:

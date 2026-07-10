@@ -31,7 +31,9 @@ class ObjectStorageApi:
         self._client = httpx.Client()
         self._async_client = httpx.AsyncClient()
 
-    def _auth_headers(self, method: str, path: str, query_string: str = "") -> dict[str, str]:
+    def _auth_headers(
+        self, method: str, path: str, query_string: str = ""
+    ) -> dict[str, str]:
         return self._signer.sign(method, self._host, path, query_string)
 
     def _parse_error(self, response: httpx.Response) -> NoReturn:
@@ -40,12 +42,18 @@ class ObjectStorageApi:
         try:
             root = ET.fromstring(response.text)
             code = root.findtext("Code") or root.findtext(f"{{{_S3_NS}}}Code") or code
-            message = root.findtext("Message") or root.findtext(f"{{{_S3_NS}}}Message") or message
+            message = (
+                root.findtext("Message")
+                or root.findtext(f"{{{_S3_NS}}}Message")
+                or message
+            )
         except ET.ParseError:
             pass
         if response.status_code in (401, 403):
             raise NcpAuthError(message, error_code=code)
-        raise NcpApiError(status_code=response.status_code, error_code=code, message=message)
+        raise NcpApiError(
+            status_code=response.status_code, error_code=code, message=message
+        )
 
     def _handle_response(self, response: httpx.Response) -> ET.Element:
         if response.is_error:
@@ -71,10 +79,12 @@ class ObjectStorageApi:
         buckets_el = root.find(self._ns("Buckets"))
         if buckets_el is not None:
             for b in buckets_el.findall(self._ns("Bucket")):
-                buckets.append({
-                    "name": self._text(b, "Name"),
-                    "creationDate": self._text(b, "CreationDate"),
-                })
+                buckets.append(
+                    {
+                        "name": self._text(b, "Name"),
+                        "creationDate": self._text(b, "CreationDate"),
+                    }
+                )
 
         return {"owner": owner, "buckets": buckets}
 
@@ -111,18 +121,19 @@ class ObjectStorageApi:
                     "displayName": self._text(owner_el, "DisplayName"),
                 }
             size_text = self._text(obj, "Size")
-            contents.append({
-                "key": self._text(obj, "Key"),
-                "lastModified": self._text(obj, "LastModified"),
-                "eTag": self._text(obj, "ETag"),
-                "size": int(size_text) if size_text else 0,
-                "storageClass": self._text(obj, "StorageClass"),
-                "owner": owner,
-            })
+            contents.append(
+                {
+                    "key": self._text(obj, "Key"),
+                    "lastModified": self._text(obj, "LastModified"),
+                    "eTag": self._text(obj, "ETag"),
+                    "size": int(size_text) if size_text else 0,
+                    "storageClass": self._text(obj, "StorageClass"),
+                    "owner": owner,
+                }
+            )
 
         common_prefixes = [
-            self._text(cp, "Prefix")
-            for cp in root.findall(self._ns("CommonPrefixes"))
+            self._text(cp, "Prefix") for cp in root.findall(self._ns("CommonPrefixes"))
         ]
 
         max_keys_text = self._text(root, "MaxKeys")
@@ -148,8 +159,14 @@ class ObjectStorageApi:
         marker: str | None = None,
     ) -> dict[str, Any]:
         path = f"/{bucket}"
-        query_string = self._build_object_query(prefix, delimiter, encoding_type, max_keys, marker)
-        url = f"{self._base_url}{path}?{query_string}" if query_string else f"{self._base_url}{path}"
+        query_string = self._build_object_query(
+            prefix, delimiter, encoding_type, max_keys, marker
+        )
+        url = (
+            f"{self._base_url}{path}?{query_string}"
+            if query_string
+            else f"{self._base_url}{path}"
+        )
         headers = self._auth_headers("GET", path, query_string)
         try:
             response = self._client.get(url, headers=headers)
@@ -173,8 +190,14 @@ class ObjectStorageApi:
         marker: str | None = None,
     ) -> dict[str, Any]:
         path = f"/{bucket}"
-        query_string = self._build_object_query(prefix, delimiter, encoding_type, max_keys, marker)
-        url = f"{self._base_url}{path}?{query_string}" if query_string else f"{self._base_url}{path}"
+        query_string = self._build_object_query(
+            prefix, delimiter, encoding_type, max_keys, marker
+        )
+        url = (
+            f"{self._base_url}{path}?{query_string}"
+            if query_string
+            else f"{self._base_url}{path}"
+        )
         headers = self._auth_headers("GET", path, query_string)
         try:
             response = await self._async_client.get(url, headers=headers)
@@ -203,7 +226,9 @@ class ObjectStorageApi:
     async def alist_buckets(self) -> dict[str, Any]:
         headers = self._auth_headers("GET", "/")
         try:
-            response = await self._async_client.get(f"{self._base_url}/", headers=headers)
+            response = await self._async_client.get(
+                f"{self._base_url}/", headers=headers
+            )
             root = self._handle_response(response)
         except (NcpAuthError, NcpApiError):
             raise

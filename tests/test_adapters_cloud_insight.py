@@ -31,6 +31,7 @@ METRIC_INFO = MetricInfo(
 
 def make_api() -> CloudInsightApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return CloudInsightApi(CI_BASE_URL, signer)
 
@@ -116,8 +117,18 @@ def test_query_data_multiple_multiple_metrics(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE * 2)
     api = make_api()
     metrics = [
-        MetricInfo(prod_key="k1", metric="cpu_used_rto", interval="Min1", dimensions={"instanceNo": "1"}),
-        MetricInfo(prod_key="k2", metric="mem_usert", interval="Min5", dimensions={"instanceNo": "2"}),
+        MetricInfo(
+            prod_key="k1",
+            metric="cpu_used_rto",
+            interval="Min1",
+            dimensions={"instanceNo": "1"},
+        ),
+        MetricInfo(
+            prod_key="k2",
+            metric="mem_usert",
+            interval="Min5",
+            dimensions={"instanceNo": "2"},
+        ),
     ]
     api.query_data_multiple(
         time_start=1718000000000,
@@ -205,9 +216,7 @@ def test_get_servers_top_sends_post_with_query_param(httpx_mock: Any) -> None:
     sent = httpx_mock.get_requests()[0]
     assert sent.method == "POST"
     assert "query=avg_cpu_used_rto" in str(sent.url)
-    assert str(sent.url).startswith(
-        f"{CI_BASE_URL}/cw_fea/real/cw/api/servers/top"
-    )
+    assert str(sent.url).startswith(f"{CI_BASE_URL}/cw_fea/real/cw/api/servers/top")
 
 
 def test_get_servers_top_with_prod_param(httpx_mock: Any) -> None:
@@ -267,7 +276,9 @@ def test_get_system_schema_key_list_correct_url(httpx_mock: Any) -> None:
     api = make_api()
     api.get_system_schema_key_list()
     sent = httpx_mock.get_requests()[0]
-    assert str(sent.url).startswith(f"{CI_BASE_URL}/cw_fea/real/cw/api/schema/system/list")
+    assert str(sent.url).startswith(
+        f"{CI_BASE_URL}/cw_fea/real/cw/api/schema/system/list"
+    )
 
 
 @pytest.mark.asyncio

@@ -20,7 +20,10 @@ SAMPLE_RESPONSE = {
                 "cloudPostgresqlServiceName": "my-postgres",
                 "isHa": True,
                 "isMultiZone": False,
-                "cloudPostgresqlInstanceStatus": {"code": "RUNNING", "codeName": "running"},
+                "cloudPostgresqlInstanceStatus": {
+                    "code": "RUNNING",
+                    "codeName": "running",
+                },
             }
         ],
     }
@@ -29,6 +32,7 @@ SAMPLE_RESPONSE = {
 
 def make_api() -> CloudPostgresqlApi:
     from ncp_api.auth import HmacSigner
+
     signer = HmacSigner("testkey", "testsecret")
     return CloudPostgresqlApi(BASE_URL, signer)
 
@@ -39,7 +43,10 @@ def test_get_cloud_postgresql_instance_list_returns_dict(httpx_mock: Any) -> Non
     result = api.get_cloud_postgresql_instance_list()
     assert isinstance(result, dict)
     assert result["totalRows"] == 1
-    assert result["cloudPostgresqlInstanceList"][0]["cloudPostgresqlServiceName"] == "my-postgres"
+    assert (
+        result["cloudPostgresqlInstanceList"][0]["cloudPostgresqlServiceName"]
+        == "my-postgres"
+    )
 
 
 def test_get_cloud_postgresql_instance_list_sends_get(httpx_mock: Any) -> None:
@@ -86,7 +93,9 @@ def test_get_cloud_postgresql_instance_list_with_filters(httpx_mock: Any) -> Non
 def test_get_cloud_postgresql_instance_no_list_param(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
     api = make_api()
-    api.get_cloud_postgresql_instance_list(cloud_postgresql_instance_no_list=["111", "222"])
+    api.get_cloud_postgresql_instance_list(
+        cloud_postgresql_instance_no_list=["111", "222"]
+    )
     sent = httpx_mock.get_requests()[0]
     url = str(sent.url)
     assert "cloudPostgresqlInstanceNoList.1=111" in url
@@ -104,7 +113,9 @@ def test_get_cloud_postgresql_sends_auth_headers(httpx_mock: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_aget_cloud_postgresql_instance_list_returns_dict(httpx_mock: Any) -> None:
+async def test_aget_cloud_postgresql_instance_list_returns_dict(
+    httpx_mock: Any,
+) -> None:
     httpx_mock.add_response(json=SAMPLE_RESPONSE)
     api = make_api()
     result = await api.aget_cloud_postgresql_instance_list()

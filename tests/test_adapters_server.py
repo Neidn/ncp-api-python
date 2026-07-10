@@ -122,3 +122,139 @@ async def test_aget_server_instance_list_with_filters(httpx_mock: Any) -> None:
     assert "serverName=async-server" in url_str
     assert "pageNo=0" in url_str
     assert "pageSize=5" in url_str
+
+
+# --- get_public_ip_instance_list ---
+
+SAMPLE_PUBLIC_IP_RESPONSE = {
+    "getPublicIpInstanceListResponse": {
+        "requestId": "req-pip-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 2,
+        "publicIpInstanceList": [
+            {
+                "publicIpInstanceNo": "111",
+                "publicIp": "1.2.3.4",
+                "publicIpKindTypeCode": "GEN",
+                "serverInstanceAssociatedWithPublicIp": {
+                    "serverInstanceNo": "999",
+                    "serverName": "my-server",
+                },
+            },
+            {
+                "publicIpInstanceNo": "222",
+                "publicIp": "5.6.7.8",
+                "publicIpKindTypeCode": "GEN",
+                "serverInstanceAssociatedWithPublicIp": None,
+            },
+        ],
+    }
+}
+
+EMPTY_PUBLIC_IP_RESPONSE = {
+    "getPublicIpInstanceListResponse": {
+        "requestId": "req-pip-002",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 0,
+        "publicIpInstanceList": [],
+    }
+}
+
+
+def make_server_api() -> ServerApi:  # type: ignore[no-redef]
+    return ServerApi(BASE_URL, HmacSigner("testkey", "testsecret"))
+
+
+def test_get_public_ip_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    result = make_server_api().get_public_ip_instance_list()
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 2
+
+
+def test_get_public_ip_list_instance_list(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    result = make_server_api().get_public_ip_instance_list()
+    pip_list = result["publicIpInstanceList"]
+    assert len(pip_list) == 2
+    assert pip_list[0]["publicIp"] == "1.2.3.4"
+    assert pip_list[1]["publicIp"] == "5.6.7.8"
+
+
+def test_get_public_ip_list_correct_path(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list()
+    sent = httpx_mock.get_requests()[0]
+    assert sent.method == "GET"
+    assert "/vserver/v2/getPublicIpInstanceList" in str(sent.url)
+
+
+def test_get_public_ip_list_is_associated_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(is_associated=True)
+    sent = httpx_mock.get_requests()[0]
+    assert "isAssociated=True" in str(sent.url)
+
+
+def test_get_public_ip_list_public_ip_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(public_ip="1.2.3.4")
+    sent = httpx_mock.get_requests()[0]
+    assert "publicIp=1.2.3.4" in str(sent.url)
+
+
+def test_get_public_ip_list_kind_type_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(public_ip_kind_type_code="GEN")
+    sent = httpx_mock.get_requests()[0]
+    assert "publicIpKindTypeCode=GEN" in str(sent.url)
+
+
+def test_get_public_ip_list_server_instance_no_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(server_instance_no="999")
+    sent = httpx_mock.get_requests()[0]
+    assert "serverInstanceNo=999" in str(sent.url)
+
+
+def test_get_public_ip_list_instance_no_list_indexed(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(public_ip_instance_no_list=["111", "222"])
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "publicIpInstanceNoList.1=111" in url
+    assert "publicIpInstanceNoList.2=222" in url
+
+
+def test_get_public_ip_list_pagination_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(page_no=1, page_size=10)
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "pageNo=1" in url
+    assert "pageSize=10" in url
+
+
+def test_get_public_ip_list_sorting_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    make_server_api().get_public_ip_instance_list(sorted_by="publicIp", sorting_order="ASC")
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "sortedBy=publicIp" in url
+    assert "sortingOrder=ASC" in url
+
+
+def test_get_public_ip_list_empty(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=EMPTY_PUBLIC_IP_RESPONSE)
+    result = make_server_api().get_public_ip_instance_list()
+    assert result["totalRows"] == 0
+    assert result["publicIpInstanceList"] == []
+
+
+async def test_aget_public_ip_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
+    result = await make_server_api().aget_public_ip_instance_list()
+    assert isinstance(result, dict)
+    assert result["publicIpInstanceList"][0]["publicIp"] == "1.2.3.4"

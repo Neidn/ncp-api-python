@@ -22,6 +22,12 @@ def test_live_server_list(live_client: NcpClient) -> None:
     assert isinstance(result["totalRows"], int)
 
 
+def test_live_public_ip_list(live_client: NcpClient) -> None:
+    result = live_client.server.get_public_ip_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("publicIpInstanceList", []), list)
+
+
 def test_live_mysql_list(live_client: NcpClient) -> None:
     result = live_client.mysql.get_cloud_mysql_instance_list()
     assert "totalRows" in result
@@ -73,6 +79,24 @@ def test_live_redis_list(live_client: NcpClient) -> None:
     result = live_client.redis.get_cloud_redis_instance_list()
     assert "totalRows" in result
     assert isinstance(result.get("cloudRedisInstanceList", []), list)
+
+
+def test_live_nat_gateway_list(live_client: NcpClient) -> None:
+    result = live_client.vpc.get_nat_gateway_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("natGatewayInstanceList", []), list)
+
+
+def test_live_vpc_peering_list(live_client: NcpClient) -> None:
+    result = live_client.vpc.get_vpc_peering_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("vpcPeeringInstanceList", []), list)
+
+
+def test_live_load_balancer_list(live_client: NcpClient) -> None:
+    result = live_client.load_balancer.get_load_balancer_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("loadBalancerInstanceList", []), list)
 
 
 def test_live_nas_volume_list(live_client: NcpClient) -> None:

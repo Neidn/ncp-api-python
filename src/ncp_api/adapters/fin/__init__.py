@@ -6,6 +6,7 @@ from ncp_api.adapters.cache import CloudCacheApi, CloudRedisApi
 from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsightApi
 from ncp_api.adapters.mongodb import CloudMongoDbApi
 from ncp_api.adapters.mysql import CloudMysqlApi
+from ncp_api.adapters.load_balancer import LoadBalancerApi
 from ncp_api.adapters.nas import NasApi
 from ncp_api.adapters.nks import NKS_BASE_URLS, NksApi
 from ncp_api.adapters.object_storage import OBJECT_STORAGE_BASE_URLS, ObjectStorageApi
@@ -23,6 +24,7 @@ class FinAdapter(NcpHttpAdapter):
         super().__init__(env_base_url, signer)
         self.server = ServerApi(env_base_url, signer)
         self.block_storage = BlockStorageApi(env_base_url, signer)
+        self.load_balancer = LoadBalancerApi(env_base_url, signer)
         self.nas = NasApi(env_base_url, signer)
         self.object_storage = ObjectStorageApi(OBJECT_STORAGE_BASE_URLS[NcpEnv.FIN], signer)
         self.vpc = VpcApi(env_base_url, signer)

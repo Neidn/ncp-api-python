@@ -11,6 +11,7 @@ from ncp_api.adapters.cache import CloudCacheApi, CloudRedisApi
 from ncp_api.adapters.cloud_insight import CloudInsightApi
 from ncp_api.adapters.mongodb import CloudMongoDbApi
 from ncp_api.adapters.mysql import CloudMysqlApi
+from ncp_api.adapters.load_balancer import LoadBalancerApi
 from ncp_api.adapters.nas import NasApi
 from ncp_api.adapters.nks import NksApi
 from ncp_api.adapters.object_storage import ObjectStorageApi
@@ -56,6 +57,10 @@ class NcpClient:
     @property
     def block_storage(self) -> BlockStorageApi:
         return self._adapter.block_storage
+
+    @property
+    def load_balancer(self) -> LoadBalancerApi:
+        return self._adapter.load_balancer
 
     @property
     def nas(self) -> NasApi:

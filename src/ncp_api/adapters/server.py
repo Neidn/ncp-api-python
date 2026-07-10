@@ -149,3 +149,95 @@ class ServerApi(NcpHttpAdapter):
         raw = await self.arequest("GET", "/getServerInstanceList", params=params)
         result: dict[str, Any] = raw["getServerInstanceListResponse"]
         return result
+
+    # --- Public IP ---
+
+    def _get_public_ip_params(
+        self,
+        *,
+        region_code: str | None,
+        is_associated: bool | None,
+        public_ip_instance_no_list: list[str] | None,
+        public_ip: str | None,
+        public_ip_kind_type_code: str | None,
+        server_instance_no: str | None,
+        page_no: int | None,
+        page_size: int | None,
+        sorted_by: str | None,
+        sorting_order: str | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            isAssociated=is_associated,
+            publicIp=public_ip,
+            publicIpKindTypeCode=public_ip_kind_type_code,
+            serverInstanceNo=server_instance_no,
+            pageNo=page_no,
+            pageSize=page_size,
+            sortedBy=sorted_by,
+            sortingOrder=sorting_order,
+            responseFormatType="json",
+        )
+        if public_ip_instance_no_list:
+            params.update(_list_params("publicIpInstanceNoList", public_ip_instance_no_list))
+        return params
+
+    def get_public_ip_instance_list(
+        self,
+        *,
+        region_code: str | None = None,
+        is_associated: bool | None = None,
+        public_ip_instance_no_list: list[str] | None = None,
+        public_ip: str | None = None,
+        public_ip_kind_type_code: str | None = None,
+        server_instance_no: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sorted_by: str | None = None,
+        sorting_order: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_public_ip_params(
+            region_code=region_code,
+            is_associated=is_associated,
+            public_ip_instance_no_list=public_ip_instance_no_list,
+            public_ip=public_ip,
+            public_ip_kind_type_code=public_ip_kind_type_code,
+            server_instance_no=server_instance_no,
+            page_no=page_no,
+            page_size=page_size,
+            sorted_by=sorted_by,
+            sorting_order=sorting_order,
+        )
+        raw = self.request("GET", "/getPublicIpInstanceList", params=params)
+        result: dict[str, Any] = raw["getPublicIpInstanceListResponse"]
+        return result
+
+    async def aget_public_ip_instance_list(
+        self,
+        *,
+        region_code: str | None = None,
+        is_associated: bool | None = None,
+        public_ip_instance_no_list: list[str] | None = None,
+        public_ip: str | None = None,
+        public_ip_kind_type_code: str | None = None,
+        server_instance_no: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sorted_by: str | None = None,
+        sorting_order: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_public_ip_params(
+            region_code=region_code,
+            is_associated=is_associated,
+            public_ip_instance_no_list=public_ip_instance_no_list,
+            public_ip=public_ip,
+            public_ip_kind_type_code=public_ip_kind_type_code,
+            server_instance_no=server_instance_no,
+            page_no=page_no,
+            page_size=page_size,
+            sorted_by=sorted_by,
+            sorting_order=sorting_order,
+        )
+        raw = await self.arequest("GET", "/getPublicIpInstanceList", params=params)
+        result: dict[str, Any] = raw["getPublicIpInstanceListResponse"]
+        return result

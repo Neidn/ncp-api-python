@@ -10,6 +10,14 @@ class HmacSigner:
         self._access_key = access_key
         self._secret_key = secret_key
 
+    @property
+    def access_key(self) -> str:
+        return self._access_key
+
+    @property
+    def secret_key(self) -> str:
+        return self._secret_key
+
     def sign(self, method: str, url: str, timestamp: int) -> dict[str, str]:
         """Return NCP HMAC-SHA256 auth headers for one request.
 

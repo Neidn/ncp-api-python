@@ -11,6 +11,8 @@ Run one:        uv run pytest tests/test_integration.py::test_live_server_list -
 """
 from __future__ import annotations
 
+import pytest
+
 from ncp_api.client import NcpClient
 
 
@@ -71,3 +73,25 @@ def test_live_redis_list(live_client: NcpClient) -> None:
     result = live_client.redis.get_cloud_redis_instance_list()
     assert "totalRows" in result
     assert isinstance(result.get("cloudRedisInstanceList", []), list)
+
+
+def test_live_nas_volume_list(live_client: NcpClient) -> None:
+    result = live_client.nas.get_nas_volume_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("nasVolumeInstanceList", []), list)
+
+
+def test_live_object_storage_list_buckets(live_client: NcpClient) -> None:
+    result = live_client.object_storage.list_buckets()
+    assert "owner" in result
+    assert isinstance(result.get("buckets", []), list)
+
+
+def test_live_object_storage_list_objects(live_client: NcpClient) -> None:
+    buckets = live_client.object_storage.list_buckets()["buckets"]
+    if not buckets:
+        pytest.skip("no buckets in account")
+    result = live_client.object_storage.list_objects(buckets[0]["name"], max_keys=10)
+    assert "contents" in result
+    assert isinstance(result["contents"], list)
+    assert isinstance(result["isTruncated"], bool)

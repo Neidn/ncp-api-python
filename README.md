@@ -335,6 +335,45 @@ pools    = await client.nks.aget_node_pool("cluster-uuid")
 
 Regions: `"KR"` (default), `"SGN"`, `"JPN"`. Gov environment additionally supports `"KRS"` (Busan).
 
+## Object Storage
+
+S3-compatible object storage. Uses AWS Signature V4 auth (not NCP HMAC) and returns structured dicts parsed from XML.
+
+```python
+# List buckets
+result = client.object_storage.list_buckets()
+buckets = result["buckets"]   # [{"name": ..., "creationDate": ...}]
+owner = result["owner"]       # {"id": ..., "displayName": ...}
+
+# List objects in a bucket
+result = client.object_storage.list_objects("my-bucket")
+for obj in result["contents"]:
+    print(obj["key"], obj["size"], obj["lastModified"])
+
+# With filters
+result = client.object_storage.list_objects(
+    "my-bucket",
+    prefix="logs/2024/",      # filter by prefix
+    delimiter="/",             # group by delimiter → result["commonPrefixes"]
+    max_keys=100,              # default 1000
+    marker="logs/2024/01/",   # pagination cursor
+)
+print(result["isTruncated"])       # True if more results exist
+print(result["commonPrefixes"])    # ["logs/2024/01/", "logs/2024/02/"]
+
+# Async
+result = await client.object_storage.alist_buckets()
+result = await client.object_storage.alist_objects("my-bucket", prefix="logs/")
+```
+
+Endpoints by environment:
+
+| Environment | Base URL |
+|-------------|----------|
+| Public | `https://kr.object.ncloudstorage.com` |
+| Gov | `https://kr.object.gov-ncloudstorage.com` |
+| Fin | `https://kr.object.fin-ncloudstorage.com` |
+
 ## Block Storage
 
 ```python
@@ -460,12 +499,44 @@ result = client.redis.get_cloud_redis_instance_list(
 result = await client.redis.aget_cloud_redis_instance_list(vpc_no="456")
 ```
 
+## NAS
+
+```python
+result = client.nas.get_nas_volume_instance_list()
+volumes = result["nasVolumeInstanceList"]
+total = result["totalRows"]
+
+# With filters
+result = client.nas.get_nas_volume_instance_list(
+    zone_code="KR-1",
+    volume_name="my-nas",
+    volume_allotment_protocol_type_code="NFS",   # "NFS" | "CIFS"
+    is_snapshot_configuration=True,
+    is_event_configuration=False,
+    page_no=0,
+    page_size=20,
+    sorted_by="volumeName",                       # nasVolumeInstanceNo | volumeName | volumeTotalSize
+    sorting_order="ASC",                          # ASC (default) | DESC
+)
+
+# Filter by instance numbers
+result = client.nas.get_nas_volume_instance_list(
+    nas_volume_instance_no_list=["111111", "222222"],
+)
+
+# Async
+result = await client.nas.aget_nas_volume_instance_list(zone_code="KR-1")
+```
+
 ## Supported APIs
 
 | Service | `client.*` | Method | Description |
 |---------|-----------|--------|-------------|
 | Server | `server` | `get_server_instance_list` | List VPC server instances |
+| Object Storage | `object_storage` | `list_buckets` | List S3-compatible buckets |
+| Object Storage | `object_storage` | `list_objects` | List objects in a bucket |
 | Block Storage | `block_storage` | `get_block_storage_instance_list` | List block storage volumes |
+| NAS | `nas` | `get_nas_volume_instance_list` | List NAS volume instances |
 | VPC | `vpc` | `get_vpc_list` | List VPCs |
 | VPC | `vpc` | `get_subnet_list` | List subnets |
 | Cloud DB for MySQL | `mysql` | `get_cloud_mysql_instance_list` | List MySQL instances |

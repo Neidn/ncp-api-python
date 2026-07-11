@@ -132,3 +132,191 @@ def test_live_object_storage_list_objects(live_client: NcpClient) -> None:
     assert "contents" in result
     assert isinstance(result["contents"], list)
     assert isinstance(result["isTruncated"], bool)
+
+
+# --- VPC Auto Scaling ---
+
+
+def test_live_auto_scaling_group_list(live_client: NcpClient) -> None:
+    result = live_client.auto_scaling.get_auto_scaling_group_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("autoScalingGroupList", []), list)
+
+
+def test_live_launch_configuration_list(live_client: NcpClient) -> None:
+    result = live_client.auto_scaling.get_launch_configuration_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("launchConfigurationList", []), list)
+
+
+def test_live_adjustment_type_list(live_client: NcpClient) -> None:
+    result = live_client.auto_scaling.get_adjustment_type_list()
+    assert "totalRows" in result
+
+
+# --- Cloud Hadoop ---
+
+
+def test_live_hadoop_instance_list(live_client: NcpClient) -> None:
+    result = live_client.hadoop.get_cloud_hadoop_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("cloudHadoopInstanceList", []), list)
+
+
+def test_live_hadoop_cluster_type_list(live_client: NcpClient) -> None:
+    result = live_client.hadoop.get_cloud_hadoop_cluster_type_list()
+    assert "totalRows" in result
+
+
+def test_live_hadoop_add_on_list(live_client: NcpClient) -> None:
+    result = live_client.hadoop.get_cloud_hadoop_add_on_list()
+    assert "totalRows" in result
+
+
+# --- Cloud MSSQL ---
+
+
+def test_live_mssql_instance_list(live_client: NcpClient) -> None:
+    result = live_client.mssql.get_cloud_mssql_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("cloudMssqlInstanceList", []), list)
+
+
+def test_live_mssql_image_product_list(live_client: NcpClient) -> None:
+    result = live_client.mssql.get_cloud_mssql_image_product_list()
+    assert "totalRows" in result
+
+
+# --- CDN ---
+
+
+def test_live_cdn_plus_instance_list(live_client: NcpClient) -> None:
+    result = live_client.cdn.get_cdn_plus_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("cdnPlusInstanceList", []), list)
+
+
+def test_live_global_cdn_instance_list(live_client: NcpClient) -> None:
+    result = live_client.cdn.get_global_cdn_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("globalCdnInstanceList", []), list)
+
+
+# --- Cloud Data Streaming Service (CDSS) ---
+
+
+def test_live_cdss_cluster_list(live_client: NcpClient) -> None:
+    result = live_client.cdss.get_cluster_list()
+    assert isinstance(result, (list, dict))
+
+
+def test_live_cdss_kafka_version_list(live_client: NcpClient) -> None:
+    result = live_client.cdss.get_kafka_version_list()
+    assert isinstance(result, (list, dict))
+
+
+def test_live_cdss_config_group_list(live_client: NcpClient) -> None:
+    result = live_client.cdss.get_config_group_list()
+    assert isinstance(result, (list, dict))
+
+
+# --- Search Engine Service (SES) ---
+
+
+def test_live_ses_cluster_list(live_client: NcpClient) -> None:
+    result = live_client.search_engine.get_cluster_list()
+    assert isinstance(result, (list, dict))
+
+
+def test_live_ses_version_list(live_client: NcpClient) -> None:
+    result = live_client.search_engine.get_ses_version_list()
+    assert isinstance(result, (list, dict))
+
+
+# --- Classic Auto Scaling ---
+
+
+def test_live_classic_auto_scaling_group_list(live_client: NcpClient) -> None:
+    result = live_client.classic_auto_scaling.get_auto_scaling_group_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("autoScalingGroupList", []), list)
+
+
+def test_live_classic_launch_configuration_list(live_client: NcpClient) -> None:
+    result = live_client.classic_auto_scaling.get_launch_configuration_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("launchConfigurationList", []), list)
+
+
+def test_live_classic_adjustment_type_list(live_client: NcpClient) -> None:
+    result = live_client.classic_auto_scaling.get_adjustment_type_list()
+    assert "totalRows" in result
+
+
+# --- Classic Cloud DB ---
+
+
+def test_live_cloud_db_instance_list(live_client: NcpClient) -> None:
+    result = live_client.cloud_db.get_cloud_db_instance_list()
+    assert "totalRows" in result
+    assert isinstance(result.get("cloudDBInstanceList", []), list)
+
+
+def test_live_cloud_db_image_product_list(live_client: NcpClient) -> None:
+    result = live_client.cloud_db.get_cloud_db_image_product_list()
+    assert "totalRows" in result
+
+
+# --- Source Commit ---
+
+
+def test_live_source_commit_repositories(live_client: NcpClient) -> None:
+    result = live_client.source_commit.get_repositories()
+    assert isinstance(result, (list, dict))
+
+
+# --- Source Build ---
+
+
+def test_live_source_build_projects(live_client: NcpClient) -> None:
+    result = live_client.source_build.get_projects()
+    assert isinstance(result, (list, dict))
+
+
+def test_live_source_build_os_env(live_client: NcpClient) -> None:
+    result = live_client.source_build.get_os_env()
+    assert isinstance(result, (list, dict))
+
+
+# --- Source Pipeline ---
+
+
+def test_live_source_pipeline_projects(live_client: NcpClient) -> None:
+    result = live_client.source_pipeline.get_projects()
+    assert isinstance(result, (list, dict))
+
+
+def test_live_source_pipeline_time_zone(live_client: NcpClient) -> None:
+    result = live_client.source_pipeline.get_time_zone()
+    assert isinstance(result, (list, dict))
+
+
+# --- VPC Source Pipeline ---
+
+
+def test_live_vpc_source_pipeline_projects(live_client: NcpClient) -> None:
+    result = live_client.vpc_source_pipeline.get_projects()
+    assert isinstance(result, (list, dict))
+
+
+# --- VPC Source Deploy ---
+
+
+def test_live_vpc_source_deploy_projects(live_client: NcpClient) -> None:
+    result = live_client.vpc_source_deploy.get_projects()
+    assert isinstance(result, (list, dict))
+
+
+def test_live_vpc_source_deploy_servers(live_client: NcpClient) -> None:
+    result = live_client.vpc_source_deploy.get_servers()
+    assert isinstance(result, (list, dict))

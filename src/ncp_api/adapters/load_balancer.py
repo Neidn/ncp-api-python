@@ -115,3 +115,113 @@ class LoadBalancerApi(NcpHttpAdapter):
         raw = await self.arequest("GET", "/getLoadBalancerInstanceList", params=params)
         result: dict[str, Any] = raw["getLoadBalancerInstanceListResponse"]
         return result
+
+    def _get_target_group_list_params(
+        self,
+        *,
+        region_code: str | None,
+        target_group_no_list: list[str] | None,
+        target_type_code: str | None,
+        vpc_no: str | None,
+        page_no: int | None,
+        page_size: int | None,
+        sorted_by: str | None,
+        sorting_order: str | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            targetTypeCode=target_type_code,
+            vpcNo=vpc_no,
+            pageNo=page_no,
+            pageSize=page_size,
+            responseFormatType="json",
+        )
+        if target_group_no_list:
+            params.update(_list_params("targetGroupNoList", target_group_no_list))
+        if sorted_by is not None:
+            params["sortList.1.sortedBy"] = sorted_by
+        if sorting_order is not None:
+            params["sortList.1.sortingOrder"] = sorting_order
+        return params
+
+    def get_target_group_list(
+        self,
+        *,
+        region_code: str | None = None,
+        target_group_no_list: list[str] | None = None,
+        target_type_code: str | None = None,
+        vpc_no: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sorted_by: str | None = None,
+        sorting_order: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_target_group_list_params(
+            region_code=region_code,
+            target_group_no_list=target_group_no_list,
+            target_type_code=target_type_code,
+            vpc_no=vpc_no,
+            page_no=page_no,
+            page_size=page_size,
+            sorted_by=sorted_by,
+            sorting_order=sorting_order,
+        )
+        raw = self.request("GET", "/getTargetGroupList", params=params)
+        result: dict[str, Any] = raw["getTargetGroupListResponse"]
+        return result
+
+    async def aget_target_group_list(
+        self,
+        *,
+        region_code: str | None = None,
+        target_group_no_list: list[str] | None = None,
+        target_type_code: str | None = None,
+        vpc_no: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sorted_by: str | None = None,
+        sorting_order: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_target_group_list_params(
+            region_code=region_code,
+            target_group_no_list=target_group_no_list,
+            target_type_code=target_type_code,
+            vpc_no=vpc_no,
+            page_no=page_no,
+            page_size=page_size,
+            sorted_by=sorted_by,
+            sorting_order=sorting_order,
+        )
+        raw = await self.arequest("GET", "/getTargetGroupList", params=params)
+        result: dict[str, Any] = raw["getTargetGroupListResponse"]
+        return result
+
+    def get_target_group_detail(
+        self,
+        *,
+        target_group_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            targetGroupNo=target_group_no,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getTargetGroupDetail", params=params)
+        result: dict[str, Any] = raw["getTargetGroupDetailResponse"]
+        return result
+
+    async def aget_target_group_detail(
+        self,
+        *,
+        target_group_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            targetGroupNo=target_group_no,
+            responseFormatType="json",
+        )
+        raw = await self.arequest("GET", "/getTargetGroupDetail", params=params)
+        result: dict[str, Any] = raw["getTargetGroupDetailResponse"]
+        return result

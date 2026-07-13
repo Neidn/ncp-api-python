@@ -113,3 +113,47 @@ class NasApi(NcpHttpAdapter):
         raw = await self.arequest("GET", "/getNasVolumeInstanceList", params=params)
         result: dict[str, Any] = raw["getNasVolumeInstanceListResponse"]
         return result
+
+    def get_nas_volume_instance_rating_list(
+        self,
+        *,
+        nas_volume_instance_no: str,
+        start_time: str,
+        end_time: str,
+        interval: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            nasVolumeInstanceNo=nas_volume_instance_no,
+            startTime=start_time,
+            endTime=end_time,
+            interval=interval,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getNasVolumeInstanceRatingList", params=params)
+        result: dict[str, Any] = raw["getNasVolumeInstanceRatingListResponse"]
+        return result
+
+    async def aget_nas_volume_instance_rating_list(
+        self,
+        *,
+        nas_volume_instance_no: str,
+        start_time: str,
+        end_time: str,
+        interval: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            nasVolumeInstanceNo=nas_volume_instance_no,
+            startTime=start_time,
+            endTime=end_time,
+            interval=interval,
+            responseFormatType="json",
+        )
+        raw = await self.arequest(
+            "GET", "/getNasVolumeInstanceRatingList", params=params
+        )
+        result: dict[str, Any] = raw["getNasVolumeInstanceRatingListResponse"]
+        return result

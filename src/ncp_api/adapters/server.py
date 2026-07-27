@@ -245,3 +245,228 @@ class ServerApi(NcpHttpAdapter):
         raw = await self.arequest("GET", "/getPublicIpInstanceList", params=params)
         result: dict[str, Any] = raw["getPublicIpInstanceListResponse"]
         return result
+
+    # --- Network Interface ---
+
+    def _get_network_interface_list_params(
+        self,
+        *,
+        region_code: str | None,
+        subnet_name: str | None,
+        network_interface_no_list: list[str] | None,
+        network_interface_name: str | None,
+        network_interface_status_code: str | None,
+        ip: str | None,
+        secondary_ip_list: list[str] | None,
+        instance_no: str | None,
+        is_default: bool | None,
+        device_name: str | None,
+        server_name: str | None,
+        page_no: int | None,
+        page_size: int | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            subnetName=subnet_name,
+            networkInterfaceName=network_interface_name,
+            networkInterfaceStatusCode=network_interface_status_code,
+            ip=ip,
+            instanceNo=instance_no,
+            isDefault=is_default,
+            deviceName=device_name,
+            serverName=server_name,
+            pageNo=page_no,
+            pageSize=page_size,
+            responseFormatType="json",
+        )
+        if network_interface_no_list:
+            params.update(
+                _list_params("networkInterfaceNoList", network_interface_no_list)
+            )
+        if secondary_ip_list:
+            params.update(_list_params("secondaryIpList", secondary_ip_list))
+        return params
+
+    def get_network_interface_list(
+        self,
+        *,
+        region_code: str | None = None,
+        subnet_name: str | None = None,
+        network_interface_no_list: list[str] | None = None,
+        network_interface_name: str | None = None,
+        network_interface_status_code: str | None = None,
+        ip: str | None = None,
+        secondary_ip_list: list[str] | None = None,
+        instance_no: str | None = None,
+        is_default: bool | None = None,
+        device_name: str | None = None,
+        server_name: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_network_interface_list_params(
+            region_code=region_code,
+            subnet_name=subnet_name,
+            network_interface_no_list=network_interface_no_list,
+            network_interface_name=network_interface_name,
+            network_interface_status_code=network_interface_status_code,
+            ip=ip,
+            secondary_ip_list=secondary_ip_list,
+            instance_no=instance_no,
+            is_default=is_default,
+            device_name=device_name,
+            server_name=server_name,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = self.request("GET", "/getNetworkInterfaceList", params=params)
+        result: dict[str, Any] = raw["getNetworkInterfaceListResponse"]
+        return result
+
+    async def aget_network_interface_list(
+        self,
+        *,
+        region_code: str | None = None,
+        subnet_name: str | None = None,
+        network_interface_no_list: list[str] | None = None,
+        network_interface_name: str | None = None,
+        network_interface_status_code: str | None = None,
+        ip: str | None = None,
+        secondary_ip_list: list[str] | None = None,
+        instance_no: str | None = None,
+        is_default: bool | None = None,
+        device_name: str | None = None,
+        server_name: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_network_interface_list_params(
+            region_code=region_code,
+            subnet_name=subnet_name,
+            network_interface_no_list=network_interface_no_list,
+            network_interface_name=network_interface_name,
+            network_interface_status_code=network_interface_status_code,
+            ip=ip,
+            secondary_ip_list=secondary_ip_list,
+            instance_no=instance_no,
+            is_default=is_default,
+            device_name=device_name,
+            server_name=server_name,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = await self.arequest("GET", "/getNetworkInterfaceList", params=params)
+        result: dict[str, Any] = raw["getNetworkInterfaceListResponse"]
+        return result
+
+    # --- Access Control Group ---
+
+    def _get_access_control_group_list_params(
+        self,
+        *,
+        region_code: str | None,
+        vpc_no: str | None,
+        access_control_group_no_list: list[str] | None,
+        access_control_group_name: str | None,
+        access_control_group_status_code: str | None,
+        page_no: int | None,
+        page_size: int | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            vpcNo=vpc_no,
+            accessControlGroupName=access_control_group_name,
+            accessControlGroupStatusCode=access_control_group_status_code,
+            pageNo=page_no,
+            pageSize=page_size,
+            responseFormatType="json",
+        )
+        if access_control_group_no_list:
+            params.update(
+                _list_params("accessControlGroupNoList", access_control_group_no_list)
+            )
+        return params
+
+    def get_access_control_group_list(
+        self,
+        *,
+        region_code: str | None = None,
+        vpc_no: str | None = None,
+        access_control_group_no_list: list[str] | None = None,
+        access_control_group_name: str | None = None,
+        access_control_group_status_code: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_access_control_group_list_params(
+            region_code=region_code,
+            vpc_no=vpc_no,
+            access_control_group_no_list=access_control_group_no_list,
+            access_control_group_name=access_control_group_name,
+            access_control_group_status_code=access_control_group_status_code,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = self.request("GET", "/getAccessControlGroupList", params=params)
+        result: dict[str, Any] = raw["getAccessControlGroupListResponse"]
+        return result
+
+    async def aget_access_control_group_list(
+        self,
+        *,
+        region_code: str | None = None,
+        vpc_no: str | None = None,
+        access_control_group_no_list: list[str] | None = None,
+        access_control_group_name: str | None = None,
+        access_control_group_status_code: str | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_access_control_group_list_params(
+            region_code=region_code,
+            vpc_no=vpc_no,
+            access_control_group_no_list=access_control_group_no_list,
+            access_control_group_name=access_control_group_name,
+            access_control_group_status_code=access_control_group_status_code,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = await self.arequest("GET", "/getAccessControlGroupList", params=params)
+        result: dict[str, Any] = raw["getAccessControlGroupListResponse"]
+        return result
+
+    def get_access_control_group_rule_list(
+        self,
+        *,
+        access_control_group_no: str,
+        region_code: str | None = None,
+        access_control_group_rule_type_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            accessControlGroupNo=access_control_group_no,
+            accessControlGroupRuleTypeCode=access_control_group_rule_type_code,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getAccessControlGroupRuleList", params=params)
+        result: dict[str, Any] = raw["getAccessControlGroupRuleListResponse"]
+        return result
+
+    async def aget_access_control_group_rule_list(
+        self,
+        *,
+        access_control_group_no: str,
+        region_code: str | None = None,
+        access_control_group_rule_type_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            accessControlGroupNo=access_control_group_no,
+            accessControlGroupRuleTypeCode=access_control_group_rule_type_code,
+            responseFormatType="json",
+        )
+        raw = await self.arequest(
+            "GET", "/getAccessControlGroupRuleList", params=params
+        )
+        result: dict[str, Any] = raw["getAccessControlGroupRuleListResponse"]
+        return result

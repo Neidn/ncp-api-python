@@ -144,7 +144,10 @@ def test_list_buckets_error_xml_parsed(httpx_mock: Any) -> None:
 def test_list_buckets_500_raises_api_error(httpx_mock: Any) -> None:
     httpx_mock.add_response(
         status_code=500,
-        text="<Error><Code>InternalError</Code><Message>Internal Server Error</Message></Error>",
+        text=(
+            "<Error><Code>InternalError</Code>"
+            "<Message>Internal Server Error</Message></Error>"
+        ),
     )
     with pytest.raises(NcpApiError):
         make_api().list_buckets()

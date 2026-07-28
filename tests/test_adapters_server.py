@@ -165,10 +165,6 @@ EMPTY_PUBLIC_IP_RESPONSE = {
 }
 
 
-def make_server_api() -> ServerApi:  # type: ignore[no-redef]
-    return ServerApi(BASE_URL, HmacSigner("testkey", "testsecret"))
-
-
 def test_get_public_ip_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_PUBLIC_IP_RESPONSE)
     result = make_server_api().get_public_ip_instance_list()

@@ -9,6 +9,7 @@ from ncp_api.adapters.cache import CloudCacheApi, CloudRedisApi
 from ncp_api.adapters.cdn import CdnApi
 from ncp_api.adapters.cdss import CdssApi
 from ncp_api.adapters.classic_auto_scaling import ClassicAutoScalingApi
+from ncp_api.adapters.cloud_activity_tracer import CloudActivityTracerApi
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CloudInsightApi
 from ncp_api.adapters.fin import FinAdapter
@@ -24,6 +25,7 @@ from ncp_api.adapters.nks import NksApi
 from ncp_api.adapters.object_storage import ObjectStorageApi
 from ncp_api.adapters.postgresql import CloudPostgresqlApi
 from ncp_api.adapters.public import PublicAdapter
+from ncp_api.adapters.resource_manager import ResourceManagerApi
 from ncp_api.adapters.search_engine import SearchEngineApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.adapters.source_build import SourceBuildApi
@@ -170,6 +172,14 @@ class NcpClient:
     @property
     def vpc_source_deploy(self) -> VpcSourceDeployApi:
         return self._adapter.vpc_source_deploy
+
+    @property
+    def resource_manager(self) -> ResourceManagerApi:
+        return self._adapter.resource_manager
+
+    @property
+    def cloud_activity_tracer(self) -> CloudActivityTracerApi:
+        return self._adapter.cloud_activity_tracer
 
     def close(self) -> None:
         self._adapter.close()

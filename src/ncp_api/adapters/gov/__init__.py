@@ -7,6 +7,10 @@ from ncp_api.adapters.cache import CloudCacheApi, CloudRedisApi
 from ncp_api.adapters.cdn import CdnApi
 from ncp_api.adapters.cdss import CDSS_BASE_URLS, CdssApi
 from ncp_api.adapters.classic_auto_scaling import ClassicAutoScalingApi
+from ncp_api.adapters.cloud_activity_tracer import (
+    CLOUD_ACTIVITY_TRACER_BASE_URLS,
+    CloudActivityTracerApi,
+)
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsightApi
 from ncp_api.adapters.global_dns import GLOBAL_DNS_BASE_URLS, GlobalDnsApi
@@ -19,6 +23,10 @@ from ncp_api.adapters.nas import NasApi
 from ncp_api.adapters.nks import NKS_BASE_URLS, NksApi
 from ncp_api.adapters.object_storage import OBJECT_STORAGE_BASE_URLS, ObjectStorageApi
 from ncp_api.adapters.postgresql import CloudPostgresqlApi
+from ncp_api.adapters.resource_manager import (
+    RESOURCE_MANAGER_BASE_URLS,
+    ResourceManagerApi,
+)
 from ncp_api.adapters.search_engine import SEARCH_ENGINE_BASE_URLS, SearchEngineApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.adapters.source_build import SOURCE_BUILD_BASE_URLS, SourceBuildApi
@@ -83,4 +91,10 @@ class GovAdapter(NcpHttpAdapter):
         )
         self.vpc_source_deploy = VpcSourceDeployApi(
             VPC_SOURCE_DEPLOY_BASE_URLS[NcpEnv.GOV], signer
+        )
+        self.resource_manager = ResourceManagerApi(
+            RESOURCE_MANAGER_BASE_URLS[NcpEnv.GOV], signer
+        )
+        self.cloud_activity_tracer = CloudActivityTracerApi(
+            CLOUD_ACTIVITY_TRACER_BASE_URLS[NcpEnv.GOV], signer
         )

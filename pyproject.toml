@@ -26,6 +26,7 @@ packages = ["src/ncp_api"]
 [tool.ruff]
 target-version = "py39"
 line-length = 88
+extend-exclude = ["*.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]

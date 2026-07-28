@@ -8,6 +8,5 @@ dist/
 *.pyc
 .superpowers/
 .idea
-uv.lock
 .coverage
 .env

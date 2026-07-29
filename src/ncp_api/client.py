@@ -32,6 +32,7 @@ from ncp_api.adapters.source_build import SourceBuildApi
 from ncp_api.adapters.source_commit import SourceCommitApi
 from ncp_api.adapters.source_deploy import VpcSourceDeployApi
 from ncp_api.adapters.source_pipeline import SourcePipelineApi
+from ncp_api.adapters.subaccount import SubAccountApi
 from ncp_api.adapters.vpc import VpcApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import BASE_URLS, NcpEnv
@@ -180,6 +181,10 @@ class NcpClient:
     @property
     def cloud_activity_tracer(self) -> CloudActivityTracerApi:
         return self._adapter.cloud_activity_tracer
+
+    @property
+    def subaccount(self) -> SubAccountApi:
+        return self._adapter.subaccount
 
     def close(self) -> None:
         self._adapter.close()

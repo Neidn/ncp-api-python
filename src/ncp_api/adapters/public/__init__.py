@@ -40,6 +40,7 @@ from ncp_api.adapters.source_pipeline import (
     VPC_SOURCE_PIPELINE_BASE_URLS,
     SourcePipelineApi,
 )
+from ncp_api.adapters.subaccount import SUBACCOUNT_BASE_URLS, SubAccountApi
 from ncp_api.adapters.vpc import VpcApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import NcpEnv
@@ -100,3 +101,4 @@ class PublicAdapter(NcpHttpAdapter):
         self.cloud_activity_tracer = CloudActivityTracerApi(
             CLOUD_ACTIVITY_TRACER_BASE_URLS[NcpEnv.PUBLIC], signer
         )
+        self.subaccount = SubAccountApi(SUBACCOUNT_BASE_URLS[NcpEnv.PUBLIC], signer)

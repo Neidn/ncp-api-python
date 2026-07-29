@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.3.0 (2026-07-29)
+
+### Features
+
+- Add SubAccountApi.create_policy for IAM policy creation
+  ([`7d7f11f`](https://github.com/Neidn/ncp-api-python/commit/7d7f11f4087edd1ff8841ca578627fa0d091b5a6))
+
+Wired for public/gov/fin via SUBACCOUNT_BASE_URLS, same as other custom-domain adapters.
+  Deliberately does not hardcode a service-code list for targets[].product: public and gov have
+  different code sets and both drift over time, so a comment points to the live guide docs instead
+  of an embedded constant that would go stale.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.2.0 (2026-07-28)
 
 ### Bug Fixes

@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.4.0 (2026-07-31)
+
+### Features
+
+- Add GtmApi for Global Traffic Manager profile/policy listing
+  ([`c9f3e6c`](https://github.com/Neidn/ncp-api-python/commit/c9f3e6cc8fd5f34fe118d88d3d49b28939545b7a))
+
+Wired for public/gov/fin via GTM_BASE_URLS, same pattern as other custom-domain adapters.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.3.0 (2026-07-29)
 
 ### Features

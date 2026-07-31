@@ -15,6 +15,7 @@ from ncp_api.adapters.cloud_insight import CloudInsightApi
 from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.global_dns import GlobalDnsApi
 from ncp_api.adapters.gov import GovAdapter
+from ncp_api.adapters.gtm import GtmApi
 from ncp_api.adapters.hadoop import HadoopApi
 from ncp_api.adapters.load_balancer import LoadBalancerApi
 from ncp_api.adapters.mongodb import CloudMongoDbApi
@@ -185,6 +186,10 @@ class NcpClient:
     @property
     def subaccount(self) -> SubAccountApi:
         return self._adapter.subaccount
+
+    @property
+    def gtm(self) -> GtmApi:
+        return self._adapter.gtm
 
     def close(self) -> None:
         self._adapter.close()

@@ -14,6 +14,7 @@ from ncp_api.adapters.cloud_activity_tracer import (
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsightApi
 from ncp_api.adapters.global_dns import GLOBAL_DNS_BASE_URLS, GlobalDnsApi
+from ncp_api.adapters.gtm import GTM_BASE_URLS, GtmApi
 from ncp_api.adapters.hadoop import HadoopApi
 from ncp_api.adapters.load_balancer import LoadBalancerApi
 from ncp_api.adapters.mongodb import CloudMongoDbApi
@@ -100,3 +101,4 @@ class FinAdapter(NcpHttpAdapter):
             CLOUD_ACTIVITY_TRACER_BASE_URLS[NcpEnv.FIN], signer
         )
         self.subaccount = SubAccountApi(SUBACCOUNT_BASE_URLS[NcpEnv.FIN], signer)
+        self.gtm = GtmApi(GTM_BASE_URLS[NcpEnv.FIN], signer)

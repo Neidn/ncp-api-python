@@ -29,6 +29,7 @@ from ncp_api.adapters.resource_manager import (
     ResourceManagerApi,
 )
 from ncp_api.adapters.search_engine import SEARCH_ENGINE_BASE_URLS, SearchEngineApi
+from ncp_api.adapters.sens import SENS_BASE_URLS, SensApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.adapters.source_build import SOURCE_BUILD_BASE_URLS, SourceBuildApi
 from ncp_api.adapters.source_commit import SOURCE_COMMIT_BASE_URLS, SourceCommitApi
@@ -102,3 +103,4 @@ class GovAdapter(NcpHttpAdapter):
         )
         self.subaccount = SubAccountApi(SUBACCOUNT_BASE_URLS[NcpEnv.GOV], signer)
         self.gtm = GtmApi(GTM_BASE_URLS[NcpEnv.GOV], signer)
+        self.sens = SensApi(SENS_BASE_URLS[NcpEnv.GOV], signer)

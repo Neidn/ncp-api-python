@@ -28,6 +28,7 @@ from ncp_api.adapters.postgresql import CloudPostgresqlApi
 from ncp_api.adapters.public import PublicAdapter
 from ncp_api.adapters.resource_manager import ResourceManagerApi
 from ncp_api.adapters.search_engine import SearchEngineApi
+from ncp_api.adapters.sens import SensApi
 from ncp_api.adapters.server import ServerApi
 from ncp_api.adapters.source_build import SourceBuildApi
 from ncp_api.adapters.source_commit import SourceCommitApi
@@ -190,6 +191,10 @@ class NcpClient:
     @property
     def gtm(self) -> GtmApi:
         return self._adapter.gtm
+
+    @property
+    def sens(self) -> SensApi:
+        return self._adapter.sens
 
     def close(self) -> None:
         self._adapter.close()

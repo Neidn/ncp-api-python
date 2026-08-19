@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v0.5.0 (2026-08-19)
+
+### Bug Fixes
+
+- Correct VpcApi.get_route_list params to match getRouteList spec
+  ([`4a4a659`](https://github.com/Neidn/ncp-api-python/commit/4a4a659cc2b4df510bffb0f994cbc8181be9f796))
+
+routeTableNo/vpcNo are the only real query params (vpcNo required);
+  destinationCidrBlock/pageNo/pageSize don't exist on this endpoint.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+### Features
+
+- Add SensApi for SMS send via Simple & Easy Notification Service
+  ([`c37f43c`](https://github.com/Neidn/ncp-api-python/commit/c37f43c2f378102385ddc702af2447f07b941861))
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.4.0 (2026-07-31)
 
 ### Features

@@ -1,6 +1,18 @@
 # CHANGELOG
 
 
+## v0.6.0 (2026-08-19)
+
+### Features
+
+- Add CloudOutboundMailerApi for sending mail and querying request history
+  ([`d49a08e`](https://github.com/Neidn/ncp-api-python/commit/d49a08e4b86ee27ddc9664f1147e6075f9bd6837))
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.5.0 (2026-08-19)
 
 ### Bug Fixes

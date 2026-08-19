@@ -12,6 +12,7 @@ from ncp_api.adapters.classic_auto_scaling import ClassicAutoScalingApi
 from ncp_api.adapters.cloud_activity_tracer import CloudActivityTracerApi
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CloudInsightApi
+from ncp_api.adapters.cloud_outbound_mailer import CloudOutboundMailerApi
 from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.global_dns import GlobalDnsApi
 from ncp_api.adapters.gov import GovAdapter
@@ -195,6 +196,10 @@ class NcpClient:
     @property
     def sens(self) -> SensApi:
         return self._adapter.sens
+
+    @property
+    def cloud_outbound_mailer(self) -> CloudOutboundMailerApi:
+        return self._adapter.cloud_outbound_mailer
 
     def close(self) -> None:
         self._adapter.close()

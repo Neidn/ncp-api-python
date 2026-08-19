@@ -13,6 +13,10 @@ from ncp_api.adapters.cloud_activity_tracer import (
 )
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsightApi
+from ncp_api.adapters.cloud_outbound_mailer import (
+    CLOUD_OUTBOUND_MAILER_BASE_URLS,
+    CloudOutboundMailerApi,
+)
 from ncp_api.adapters.global_dns import GLOBAL_DNS_BASE_URLS, GlobalDnsApi
 from ncp_api.adapters.gtm import GTM_BASE_URLS, GtmApi
 from ncp_api.adapters.hadoop import HadoopApi
@@ -106,3 +110,6 @@ class PublicAdapter(NcpHttpAdapter):
         self.subaccount = SubAccountApi(SUBACCOUNT_BASE_URLS[NcpEnv.PUBLIC], signer)
         self.gtm = GtmApi(GTM_BASE_URLS[NcpEnv.PUBLIC], signer)
         self.sens = SensApi(SENS_BASE_URLS[NcpEnv.PUBLIC], signer)
+        self.cloud_outbound_mailer = CloudOutboundMailerApi(
+            CLOUD_OUTBOUND_MAILER_BASE_URLS[NcpEnv.PUBLIC], signer
+        )

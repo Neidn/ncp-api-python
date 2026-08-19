@@ -531,34 +531,26 @@ class VpcApi(NcpHttpAdapter):
         *,
         region_code: str | None,
         route_table_no: str,
-        destination_cidr_block: str | None,
-        page_no: int | None,
-        page_size: int | None,
+        vpc_no: str,
     ) -> dict[str, str]:
         return _build_params(
             regionCode=region_code,
             routeTableNo=route_table_no,
-            destinationCidrBlock=destination_cidr_block,
-            pageNo=page_no,
-            pageSize=page_size,
+            vpcNo=vpc_no,
             responseFormatType="json",
         )
 
     def get_route_list(
         self,
         route_table_no: str,
+        vpc_no: str,
         *,
         region_code: str | None = None,
-        destination_cidr_block: str | None = None,
-        page_no: int | None = None,
-        page_size: int | None = None,
     ) -> dict[str, Any]:
         params = self._get_route_params(
             region_code=region_code,
             route_table_no=route_table_no,
-            destination_cidr_block=destination_cidr_block,
-            page_no=page_no,
-            page_size=page_size,
+            vpc_no=vpc_no,
         )
         raw = self.request("GET", "/getRouteList", params=params)
         result: dict[str, Any] = raw["getRouteListResponse"]
@@ -567,18 +559,14 @@ class VpcApi(NcpHttpAdapter):
     async def aget_route_list(
         self,
         route_table_no: str,
+        vpc_no: str,
         *,
         region_code: str | None = None,
-        destination_cidr_block: str | None = None,
-        page_no: int | None = None,
-        page_size: int | None = None,
     ) -> dict[str, Any]:
         params = self._get_route_params(
             region_code=region_code,
             route_table_no=route_table_no,
-            destination_cidr_block=destination_cidr_block,
-            page_no=page_no,
-            page_size=page_size,
+            vpc_no=vpc_no,
         )
         raw = await self.arequest("GET", "/getRouteList", params=params)
         result: dict[str, Any] = raw["getRouteListResponse"]

@@ -666,48 +666,38 @@ SAMPLE_ROUTE_RESPONSE = {
 
 def test_get_route_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
-    result = make_api().get_route_list("11111")
+    result = make_api().get_route_list("11111", "22222")
     assert isinstance(result, dict)
     assert result["totalRows"] == 2
 
 
 def test_get_route_list_correct_path(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
-    make_api().get_route_list("11111")
+    make_api().get_route_list("11111", "22222")
     sent = httpx_mock.get_requests()[0]
     assert "/vpc/v2/getRouteList" in str(sent.url)
     assert "routeTableNo=11111" in str(sent.url)
+    assert "vpcNo=22222" in str(sent.url)
 
 
 def test_get_route_list_data(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
-    result = make_api().get_route_list("11111")
+    result = make_api().get_route_list("11111", "22222")
     routes = result["routeList"]
     assert routes[0]["destinationCidrBlock"] == "0.0.0.0/0"
     assert routes[1]["destinationCidrBlock"] == "10.0.0.0/16"
 
 
-def test_get_route_list_cidr_filter(httpx_mock: Any) -> None:
+def test_get_route_list_region_code(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
-    make_api().get_route_list("11111", destination_cidr_block="0.0.0.0/0")
+    make_api().get_route_list("11111", "22222", region_code="KR")
     url = str(httpx_mock.get_requests()[0].url)
-    assert (
-        "destinationCidrBlock=0.0.0.0%2F0" in url
-        or "destinationCidrBlock=0.0.0.0/0" in url
-    )
-
-
-def test_get_route_list_pagination_params(httpx_mock: Any) -> None:
-    httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
-    make_api().get_route_list("11111", page_no=1, page_size=50)
-    url = str(httpx_mock.get_requests()[0].url)
-    assert "pageNo=1" in url
-    assert "pageSize=50" in url
+    assert "regionCode=KR" in url
 
 
 @pytest.mark.asyncio
 async def test_aget_route_list_returns_dict(httpx_mock: Any) -> None:
     httpx_mock.add_response(json=SAMPLE_ROUTE_RESPONSE)
-    result = await make_api().aget_route_list("11111")
+    result = await make_api().aget_route_list("11111", "22222")
     assert isinstance(result, dict)
     assert len(result["routeList"]) == 2

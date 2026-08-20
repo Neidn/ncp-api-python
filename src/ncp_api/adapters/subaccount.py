@@ -16,10 +16,46 @@ def _body(**kwargs: Any) -> dict[str, Any]:
     return {k: v for k, v in kwargs.items() if v is not None}
 
 
+def _build_params(**kwargs: Any) -> dict[str, str]:
+    return {k: str(v) for k, v in kwargs.items() if v is not None}
+
+
 class SubAccountApi(NcpHttpAdapter):
     """Sub Account (IAM policy). Sig-v2, REST + JSON."""
 
     path_prefix: ClassVar[str] = "/api/v1"
+
+    def get_sub_accounts(
+        self,
+        *,
+        search_column: str | None = None,
+        search_word: str | None = None,
+        page: int | None = None,
+        size: int | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            searchColumn=search_column,
+            searchWord=search_word,
+            page=page,
+            size=size,
+        )
+        return self.request("GET", "/sub-accounts", params=params)
+
+    async def aget_sub_accounts(
+        self,
+        *,
+        search_column: str | None = None,
+        search_word: str | None = None,
+        page: int | None = None,
+        size: int | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            searchColumn=search_column,
+            searchWord=search_word,
+            page=page,
+            size=size,
+        )
+        return await self.arequest("GET", "/sub-accounts", params=params)
 
     # permissions[].targets[].product is a service code; the valid set
     # differs per environment and changes over time (see

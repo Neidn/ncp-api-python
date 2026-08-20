@@ -5,7 +5,7 @@ Python client library for [Naver Cloud Platform (NCP)](https://www.ncloud.com) A
 ## Installation
 
 ```bash
-uv add git+https://github.com/Neidn/ncp-api-python@v0.1.0
+uv add git+https://github.com/Neidn/ncp-api-python@v0.7.0
 ```
 
 ## Quick Start
@@ -122,6 +122,17 @@ All methods have an async counterpart prefixed with `a` (e.g. `aget_server_insta
 | Service | `client.*` | Key Methods |
 |---------|-----------|-------------|
 | Cloud Insight | `cloud_insight` | `query_data_multiple`, `get_system_schema_key_list`, `get_servers_top` |
+| Resource Manager | `resource_manager` | `get_resource_list` |
+| Cloud Activity Tracer | `cloud_activity_tracer` | `get_activity_list` |
+| Sub Account (IAM) | `subaccount` | `create_policy`, `get_sub_accounts` |
+| Global Traffic Manager (GTM) | `gtm` | `get_profile_list`, `get_policy_list` |
+
+### Notification & Messaging
+
+| Service | `client.*` | Key Methods |
+|---------|-----------|-------------|
+| SENS (SMS) | `sens` | `send_sms` |
+| Cloud Outbound Mailer | `cloud_outbound_mailer` | `create_mail`, `get_mail_request_list` |
 
 ### DevOps (Source Tools)
 

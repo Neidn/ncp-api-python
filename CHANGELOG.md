@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.7.0 (2026-08-20)
+
+### Features
+
+- Add SubAccountApi.get_sub_accounts for querying sub accounts
+  ([`5572daf`](https://github.com/Neidn/ncp-api-python/commit/5572daf0123703fdb6c55cc8de436955981da0c6))
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+
 ## v0.6.0 (2026-08-19)
 
 ### Features

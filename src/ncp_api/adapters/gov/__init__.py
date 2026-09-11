@@ -13,6 +13,7 @@ from ncp_api.adapters.cloud_activity_tracer import (
 )
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsightApi
+from ncp_api.adapters.cloud_insight_rule import CloudInsightRuleApi
 from ncp_api.adapters.cloud_outbound_mailer import (
     CLOUD_OUTBOUND_MAILER_BASE_URLS,
     CloudOutboundMailerApi,
@@ -69,6 +70,9 @@ class GovAdapter(NcpHttpAdapter):
         self.cache = CloudCacheApi(env_base_url, signer)
         self.redis = CloudRedisApi(env_base_url, signer)
         self.cloud_insight = CloudInsightApi(
+            CLOUD_INSIGHT_BASE_URLS[NcpEnv.GOV], signer
+        )
+        self.cloud_insight_rule = CloudInsightRuleApi(
             CLOUD_INSIGHT_BASE_URLS[NcpEnv.GOV], signer
         )
         self.mysql = CloudMysqlApi(env_base_url, signer)

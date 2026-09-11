@@ -12,6 +12,7 @@ from ncp_api.adapters.classic_auto_scaling import ClassicAutoScalingApi
 from ncp_api.adapters.cloud_activity_tracer import CloudActivityTracerApi
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CloudInsightApi
+from ncp_api.adapters.cloud_insight_rule import CloudInsightRuleApi
 from ncp_api.adapters.cloud_outbound_mailer import CloudOutboundMailerApi
 from ncp_api.adapters.fin import FinAdapter
 from ncp_api.adapters.global_dns import GlobalDnsApi
@@ -108,6 +109,10 @@ class NcpClient:
     @property
     def cloud_insight(self) -> CloudInsightApi:
         return self._adapter.cloud_insight
+
+    @property
+    def cloud_insight_rule(self) -> CloudInsightRuleApi:
+        return self._adapter.cloud_insight_rule
 
     @property
     def mysql(self) -> CloudMysqlApi:

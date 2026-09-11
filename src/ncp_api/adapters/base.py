@@ -67,6 +67,8 @@ class NcpHttpAdapter:
                 error_code=error_code,
                 message=message,
             )
+        if not response.content:
+            return {}
         result: dict[str, Any] = response.json()
         return result
 

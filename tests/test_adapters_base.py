@@ -57,6 +57,13 @@ def test_request_success(httpx_mock: Any) -> None:
     assert result == {"returnCode": "0", "data": "ok"}
 
 
+def test_request_empty_body_returns_empty_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(status_code=200, content=b"")
+    adapter = make_adapter()
+    result = adapter.request("POST", "/test/path")
+    assert result == {}
+
+
 def test_request_sends_auth_headers(httpx_mock: Any) -> None:
     httpx_mock.add_response(json={})
     adapter = make_adapter()
@@ -155,6 +162,14 @@ async def test_arequest_success(httpx_mock: Any) -> None:
     adapter = make_adapter()
     result = await adapter.arequest("GET", "/test/path")
     assert result == {"returnCode": "0"}
+
+
+@pytest.mark.asyncio
+async def test_arequest_empty_body_returns_empty_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(status_code=200, content=b"")
+    adapter = make_adapter()
+    result = await adapter.arequest("POST", "/test/path")
+    assert result == {}
 
 
 @pytest.mark.asyncio

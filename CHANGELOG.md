@@ -1,6 +1,27 @@
 # CHANGELOG
 
 
+## v0.8.0 (2026-09-11)
+
+### Documentation
+
+- Add missing service tables to README (management, notification/messaging)
+  ([`c913e35`](https://github.com/Neidn/ncp-api-python/commit/c913e355d1eb2eb624d3c5e66a1f0b027d8101f3))
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+### Features
+
+- Add CloudInsightRuleApi for Cloud Insight Event Rule management
+  ([`b9646e7`](https://github.com/Neidn/ncp-api-python/commit/b9646e731bfe25ebcac7014e631b3ba3346339f2))
+
+Adds MetricsGrp (rule template), MonitorGrp (target group), and RuleGroup (event rule) CRUD, plus
+  notification recipient lookup, so callers can register threshold rules (e.g. CPU>=90 Critical),
+  assign them to Server/CDB resources, and wire notification recipients.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+
 ## v0.7.0 (2026-08-20)
 
 ### Features

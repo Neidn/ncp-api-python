@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.8.1 (2026-09-11)
+
+### Bug Fixes
+
+- Handle empty response body in NcpHttpAdapter._handle_response
+  ([`ee96187`](https://github.com/Neidn/ncp-api-python/commit/ee961872c8db8f6cbee65e710a53177ace26063d))
+
+Some NCP endpoints (e.g. CloudInsightRuleApi.delete_rule_group) return 200 with an empty body on
+  success. response.json() on empty content raised a JSON decode error instead of returning
+  normally.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+
 ## v0.8.0 (2026-09-11)
 
 ### Documentation

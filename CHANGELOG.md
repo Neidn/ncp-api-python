@@ -1,6 +1,18 @@
 # CHANGELOG
 
 
+## v0.9.0 (2026-09-14)
+
+### Features
+
+- Add ServerApi.set_protect_server_termination
+  ([`6488468`](https://github.com/Neidn/ncp-api-python/commit/64884680a9242378d1269af3d24169532e249c4c))
+
+Toggles termination protection on a VPC server instance.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+
 ## v0.8.1 (2026-09-11)
 
 ### Bug Fixes

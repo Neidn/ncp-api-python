@@ -470,3 +470,37 @@ class ServerApi(NcpHttpAdapter):
         )
         result: dict[str, Any] = raw["getAccessControlGroupRuleListResponse"]
         return result
+
+    def set_protect_server_termination(
+        self,
+        *,
+        server_instance_no: str,
+        is_protect_server_termination: bool,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            serverInstanceNo=server_instance_no,
+            isProtectServerTermination=str(is_protect_server_termination).lower(),
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/setProtectServerTermination", params=params)
+        result: dict[str, Any] = raw["setProtectServerTerminationResponse"]
+        return result
+
+    async def aset_protect_server_termination(
+        self,
+        *,
+        server_instance_no: str,
+        is_protect_server_termination: bool,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            serverInstanceNo=server_instance_no,
+            isProtectServerTermination=str(is_protect_server_termination).lower(),
+            responseFormatType="json",
+        )
+        raw = await self.arequest("GET", "/setProtectServerTermination", params=params)
+        result: dict[str, Any] = raw["setProtectServerTerminationResponse"]
+        return result

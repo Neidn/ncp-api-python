@@ -260,3 +260,63 @@ async def test_aget_public_ip_list_returns_dict(httpx_mock: Any) -> None:
     result = await make_server_api().aget_public_ip_instance_list()
     assert isinstance(result, dict)
     assert result["publicIpInstanceList"][0]["publicIp"] == "1.2.3.4"
+
+
+SAMPLE_PROTECT_TERMINATION_RESPONSE = {
+    "setProtectServerTerminationResponse": {
+        "returnCode": "0",
+        "returnMessage": "success",
+    }
+}
+
+
+def test_set_protect_server_termination_path_and_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PROTECT_TERMINATION_RESPONSE)
+    make_server_api().set_protect_server_termination(
+        server_instance_no="12348773", is_protect_server_termination=True
+    )
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "/vserver/v2/setProtectServerTermination" in url
+    assert "serverInstanceNo=12348773" in url
+    assert "isProtectServerTermination=true" in url
+
+
+def test_set_protect_server_termination_false_lowercased(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PROTECT_TERMINATION_RESPONSE)
+    make_server_api().set_protect_server_termination(
+        server_instance_no="12348773", is_protect_server_termination=False
+    )
+    sent = httpx_mock.get_requests()[0]
+    assert "isProtectServerTermination=false" in str(sent.url)
+
+
+def test_set_protect_server_termination_region_code_param(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_PROTECT_TERMINATION_RESPONSE)
+    make_server_api().set_protect_server_termination(
+        server_instance_no="12348773",
+        is_protect_server_termination=True,
+        region_code="KR",
+    )
+    sent = httpx_mock.get_requests()[0]
+    assert "regionCode=KR" in str(sent.url)
+
+
+def test_set_protect_server_termination_returns_unwrapped_dict(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_PROTECT_TERMINATION_RESPONSE)
+    result = make_server_api().set_protect_server_termination(
+        server_instance_no="12348773", is_protect_server_termination=True
+    )
+    assert result == {"returnCode": "0", "returnMessage": "success"}
+
+
+async def test_aset_protect_server_termination_returns_dict(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_PROTECT_TERMINATION_RESPONSE)
+    result = await make_server_api().aset_protect_server_termination(
+        server_instance_no="12348773", is_protect_server_termination=True
+    )
+    assert result == {"returnCode": "0", "returnMessage": "success"}

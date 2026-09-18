@@ -14,6 +14,10 @@ from ncp_api.adapters.cloud_activity_tracer import (
 from ncp_api.adapters.cloud_db import CloudDbApi
 from ncp_api.adapters.cloud_insight import CLOUD_INSIGHT_BASE_URLS, CloudInsightApi
 from ncp_api.adapters.cloud_insight_rule import CloudInsightRuleApi
+from ncp_api.adapters.cloud_log_analytics import (
+    CLOUD_LOG_ANALYTICS_BASE_URLS,
+    CloudLogAnalyticsApi,
+)
 from ncp_api.adapters.cloud_outbound_mailer import (
     CLOUD_OUTBOUND_MAILER_BASE_URLS,
     CloudOutboundMailerApi,
@@ -74,6 +78,9 @@ class PublicAdapter(NcpHttpAdapter):
         )
         self.cloud_insight_rule = CloudInsightRuleApi(
             CLOUD_INSIGHT_BASE_URLS[NcpEnv.PUBLIC], signer
+        )
+        self.cloud_log_analytics = CloudLogAnalyticsApi(
+            CLOUD_LOG_ANALYTICS_BASE_URLS[NcpEnv.PUBLIC], signer
         )
         self.mysql = CloudMysqlApi(env_base_url, signer)
         self.mongodb = CloudMongoDbApi(env_base_url, signer)

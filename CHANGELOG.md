@@ -1,6 +1,21 @@
 # CHANGELOG
 
 
+## v0.10.0 (2026-09-18)
+
+### Features
+
+- Add CloudLogAnalyticsApi for VPC server-list + collection status
+  ([`ff20b25`](https://github.com/Neidn/ncp-api-python/commit/ff20b256b7db0f09601e3644f38f992b6c64f9bd))
+
+Covers getServerList for Server, MySQL, MSSQL, MongoDB, PostgreSQL, Bare Metal, NKS (kubernetes),
+  Search Engine Service, and Cloud Data Streaming Service.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.9.0 (2026-09-14)
 
 ### Features

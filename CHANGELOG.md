@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v0.11.0 (2026-11-02)
+
+### Features
+
+- Add SubAccountApiV2 (IAM v2 standard spec) alongside v1
+  ([`f9b73cb`](https://github.com/Neidn/ncp-api-python/commit/f9b73cb3bf812db8c7ec06d680546f702509a677))
+
+Adds get_user and list_sub_accounts under /api/v2, matching NCP's new standardized API spec (first
+  rolled out in gov zone): same sig-v2 auth and domain as the existing v1 SubAccountApi, wired as a
+  sibling subaccount_v2 attribute so callers pick v1 or v2 per call.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.10.0 (2026-09-18)
 
 ### Features

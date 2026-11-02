@@ -76,5 +76,5 @@ src/ncp_api/exceptions.py    — NcpError hierarchy
 
 ## CI/CD
 
-GitHub Actions (`.github/workflows/main.yml`): lint → typecheck (parallel) → test (matrix 3.9–3.12) → release.
+GitHub Actions (`.github/workflows/main.yml`): lint → typecheck (parallel) → test (matrix 3.9–3.15) → release.
 Release job runs `python-semantic-release` and publishes a GitHub Release with auto-generated tag.

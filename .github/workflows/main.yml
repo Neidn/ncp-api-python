@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.12"
+          python-version: "3.15"
       - run: uv sync --all-groups
       - run: uv run ruff check .
       - run: uv run ruff format --check .
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.12"
+          python-version: "3.15"
       - run: uv sync --all-groups
       - run: uv run mypy src/
 
@@ -31,7 +31,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version:
+          ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
@@ -54,7 +55,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       - uses: astral-sh/setup-uv@v5
         with:
-          python-version: "3.12"
+          python-version: "3.15"
       - run: uv sync --all-groups
       - uses: python-semantic-release/python-semantic-release@v9
         with:

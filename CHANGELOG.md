@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v0.12.0 (2026-11-02)
+
+### Features
+
+- Add Network ACL list/detail/rule APIs to VpcApi
+  ([`3eeab3a`](https://github.com/Neidn/ncp-api-python/commit/3eeab3a7b373919d8378402c5490474eb5e51097))
+
+Adds get_network_acl_list, get_network_acl_detail, get_network_acl_rule_list,
+  get_network_acl_deny_allow_group_list, and get_network_acl_deny_allow_group_detail (+async
+  variants).
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.11.0 (2026-11-02)
 
 ### Features

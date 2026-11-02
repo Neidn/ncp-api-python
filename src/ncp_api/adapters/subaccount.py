@@ -91,3 +91,60 @@ class SubAccountApi(NcpHttpAdapter):
             tags=tags,
         )
         return await self.arequest("POST", "/policies", json=body)
+
+
+def _list_sub_accounts_params(
+    *,
+    page_no: int | None,
+    page_size: int | None,
+    sort: list[str] | None,
+) -> list[tuple[str, str]]:
+    params: list[tuple[str, str]] = []
+    if page_no is not None:
+        params.append(("pageNo", str(page_no)))
+    if page_size is not None:
+        params.append(("pageSize", str(page_size)))
+    if sort:
+        params.extend(("sort", s) for s in sort)
+    return params
+
+
+class SubAccountApiV2(NcpHttpAdapter):
+    """Sub Account (IAM v2 -- Ncloud API standard spec). Sig-v2, REST + JSON.
+
+    First style of NCP's newer standardized API spec (rolled out in gov
+    zone first): clean resource paths (GET /users/{id}) under /api/v2,
+    same sig-v2 HMAC auth and domain as the v1 SubAccountApi above.
+    """
+
+    path_prefix: ClassVar[str] = "/api/v2"
+
+    def get_user(self, *, sub_account_id: str) -> dict[str, Any]:
+        return self.request("GET", f"/users/{sub_account_id}")
+
+    async def aget_user(self, *, sub_account_id: str) -> dict[str, Any]:
+        return await self.arequest("GET", f"/users/{sub_account_id}")
+
+    def list_sub_accounts(
+        self,
+        *,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sort: list[str] | None = None,
+    ) -> dict[str, Any]:
+        params = _list_sub_accounts_params(
+            page_no=page_no, page_size=page_size, sort=sort
+        )
+        return self.request("GET", "/sub-accounts", params=params)
+
+    async def alist_sub_accounts(
+        self,
+        *,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        sort: list[str] | None = None,
+    ) -> dict[str, Any]:
+        params = _list_sub_accounts_params(
+            page_no=page_no, page_size=page_size, sort=sort
+        )
+        return await self.arequest("GET", "/sub-accounts", params=params)

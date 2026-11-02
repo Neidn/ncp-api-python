@@ -37,7 +37,7 @@ from ncp_api.adapters.source_build import SourceBuildApi
 from ncp_api.adapters.source_commit import SourceCommitApi
 from ncp_api.adapters.source_deploy import VpcSourceDeployApi
 from ncp_api.adapters.source_pipeline import SourcePipelineApi
-from ncp_api.adapters.subaccount import SubAccountApi
+from ncp_api.adapters.subaccount import SubAccountApi, SubAccountApiV2
 from ncp_api.adapters.vpc import VpcApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import BASE_URLS, NcpEnv
@@ -198,6 +198,10 @@ class NcpClient:
     @property
     def subaccount(self) -> SubAccountApi:
         return self._adapter.subaccount
+
+    @property
+    def subaccount_v2(self) -> SubAccountApiV2:
+        return self._adapter.subaccount_v2
 
     @property
     def gtm(self) -> GtmApi:

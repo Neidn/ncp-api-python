@@ -571,3 +571,264 @@ class VpcApi(NcpHttpAdapter):
         raw = await self.arequest("GET", "/getRouteList", params=params)
         result: dict[str, Any] = raw["getRouteListResponse"]
         return result
+
+    # --- Network ACL ---
+
+    def _get_network_acl_list_params(
+        self,
+        *,
+        region_code: str | None,
+        network_acl_name: str | None,
+        network_acl_status_code: str | None,
+        network_acl_no_list: list[str] | None,
+        page_no: int | None,
+        page_size: int | None,
+        vpc_no: str | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclName=network_acl_name,
+            networkAclStatusCode=network_acl_status_code,
+            pageNo=page_no,
+            pageSize=page_size,
+            vpcNo=vpc_no,
+            responseFormatType="json",
+        )
+        if network_acl_no_list:
+            params.update(_list_params("networkAclNoList", network_acl_no_list))
+        return params
+
+    def get_network_acl_list(
+        self,
+        *,
+        region_code: str | None = None,
+        network_acl_name: str | None = None,
+        network_acl_status_code: str | None = None,
+        network_acl_no_list: list[str] | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        vpc_no: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_network_acl_list_params(
+            region_code=region_code,
+            network_acl_name=network_acl_name,
+            network_acl_status_code=network_acl_status_code,
+            network_acl_no_list=network_acl_no_list,
+            page_no=page_no,
+            page_size=page_size,
+            vpc_no=vpc_no,
+        )
+        raw = self.request("GET", "/getNetworkAclList", params=params)
+        result: dict[str, Any] = raw["getNetworkAclListResponse"]
+        return result
+
+    async def aget_network_acl_list(
+        self,
+        *,
+        region_code: str | None = None,
+        network_acl_name: str | None = None,
+        network_acl_status_code: str | None = None,
+        network_acl_no_list: list[str] | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+        vpc_no: str | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_network_acl_list_params(
+            region_code=region_code,
+            network_acl_name=network_acl_name,
+            network_acl_status_code=network_acl_status_code,
+            network_acl_no_list=network_acl_no_list,
+            page_no=page_no,
+            page_size=page_size,
+            vpc_no=vpc_no,
+        )
+        raw = await self.arequest("GET", "/getNetworkAclList", params=params)
+        result: dict[str, Any] = raw["getNetworkAclListResponse"]
+        return result
+
+    def get_network_acl_detail(
+        self,
+        *,
+        network_acl_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclNo=network_acl_no,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getNetworkAclDetail", params=params)
+        result: dict[str, Any] = raw["getNetworkAclDetailResponse"]
+        return result
+
+    async def aget_network_acl_detail(
+        self,
+        *,
+        network_acl_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclNo=network_acl_no,
+            responseFormatType="json",
+        )
+        raw = await self.arequest("GET", "/getNetworkAclDetail", params=params)
+        result: dict[str, Any] = raw["getNetworkAclDetailResponse"]
+        return result
+
+    def get_network_acl_rule_list(
+        self,
+        *,
+        network_acl_no: str,
+        region_code: str | None = None,
+        network_acl_rule_type_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclNo=network_acl_no,
+            networkAclRuleTypeCode=network_acl_rule_type_code,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getNetworkAclRuleList", params=params)
+        result: dict[str, Any] = raw["getNetworkAclRuleListResponse"]
+        return result
+
+    async def aget_network_acl_rule_list(
+        self,
+        *,
+        network_acl_no: str,
+        region_code: str | None = None,
+        network_acl_rule_type_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclNo=network_acl_no,
+            networkAclRuleTypeCode=network_acl_rule_type_code,
+            responseFormatType="json",
+        )
+        raw = await self.arequest("GET", "/getNetworkAclRuleList", params=params)
+        result: dict[str, Any] = raw["getNetworkAclRuleListResponse"]
+        return result
+
+    # --- Network ACL Deny-Allow Group ---
+
+    def _get_network_acl_deny_allow_group_list_params(
+        self,
+        *,
+        region_code: str | None,
+        vpc_no: str | None,
+        network_acl_deny_allow_group_name: str | None,
+        network_acl_deny_allow_group_status_code: str | None,
+        network_acl_deny_allow_group_no_list: list[str] | None,
+        is_applied: bool | None,
+        page_no: int | None,
+        page_size: int | None,
+    ) -> dict[str, str]:
+        params = _build_params(
+            regionCode=region_code,
+            vpcNo=vpc_no,
+            networkAclDenyAllowGroupName=network_acl_deny_allow_group_name,
+            networkAclDenyAllowGroupStatusCode=network_acl_deny_allow_group_status_code,
+            isApplied=(str(is_applied).lower() if is_applied is not None else None),
+            pageNo=page_no,
+            pageSize=page_size,
+            responseFormatType="json",
+        )
+        if network_acl_deny_allow_group_no_list:
+            params.update(
+                _list_params(
+                    "networkAclDenyAllowGroupNoList",
+                    network_acl_deny_allow_group_no_list,
+                )
+            )
+        return params
+
+    def get_network_acl_deny_allow_group_list(
+        self,
+        *,
+        region_code: str | None = None,
+        vpc_no: str | None = None,
+        network_acl_deny_allow_group_name: str | None = None,
+        network_acl_deny_allow_group_status_code: str | None = None,
+        network_acl_deny_allow_group_no_list: list[str] | None = None,
+        is_applied: bool | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_network_acl_deny_allow_group_list_params(
+            region_code=region_code,
+            vpc_no=vpc_no,
+            network_acl_deny_allow_group_name=network_acl_deny_allow_group_name,
+            network_acl_deny_allow_group_status_code=(
+                network_acl_deny_allow_group_status_code
+            ),
+            network_acl_deny_allow_group_no_list=network_acl_deny_allow_group_no_list,
+            is_applied=is_applied,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = self.request("GET", "/getNetworkAclDenyAllowGroupList", params=params)
+        result: dict[str, Any] = raw["getNetworkAclDenyAllowGroupListResponse"]
+        return result
+
+    async def aget_network_acl_deny_allow_group_list(
+        self,
+        *,
+        region_code: str | None = None,
+        vpc_no: str | None = None,
+        network_acl_deny_allow_group_name: str | None = None,
+        network_acl_deny_allow_group_status_code: str | None = None,
+        network_acl_deny_allow_group_no_list: list[str] | None = None,
+        is_applied: bool | None = None,
+        page_no: int | None = None,
+        page_size: int | None = None,
+    ) -> dict[str, Any]:
+        params = self._get_network_acl_deny_allow_group_list_params(
+            region_code=region_code,
+            vpc_no=vpc_no,
+            network_acl_deny_allow_group_name=network_acl_deny_allow_group_name,
+            network_acl_deny_allow_group_status_code=(
+                network_acl_deny_allow_group_status_code
+            ),
+            network_acl_deny_allow_group_no_list=network_acl_deny_allow_group_no_list,
+            is_applied=is_applied,
+            page_no=page_no,
+            page_size=page_size,
+        )
+        raw = await self.arequest(
+            "GET", "/getNetworkAclDenyAllowGroupList", params=params
+        )
+        result: dict[str, Any] = raw["getNetworkAclDenyAllowGroupListResponse"]
+        return result
+
+    def get_network_acl_deny_allow_group_detail(
+        self,
+        *,
+        network_acl_deny_allow_group_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclDenyAllowGroupNo=network_acl_deny_allow_group_no,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getNetworkAclDenyAllowGroupDetail", params=params)
+        result: dict[str, Any] = raw["getNetworkAclDenyAllowGroupDetailResponse"]
+        return result
+
+    async def aget_network_acl_deny_allow_group_detail(
+        self,
+        *,
+        network_acl_deny_allow_group_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            networkAclDenyAllowGroupNo=network_acl_deny_allow_group_no,
+            responseFormatType="json",
+        )
+        raw = await self.arequest(
+            "GET", "/getNetworkAclDenyAllowGroupDetail", params=params
+        )
+        result: dict[str, Any] = raw["getNetworkAclDenyAllowGroupDetailResponse"]
+        return result

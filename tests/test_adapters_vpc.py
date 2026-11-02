@@ -701,3 +701,262 @@ async def test_aget_route_list_returns_dict(httpx_mock: Any) -> None:
     result = await make_api().aget_route_list("11111", "22222")
     assert isinstance(result, dict)
     assert len(result["routeList"]) == 2
+
+
+# --- Network ACL ---
+
+SAMPLE_NETWORK_ACL_LIST_RESPONSE = {
+    "getNetworkAclListResponse": {
+        "requestId": "req-nacl-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "networkAclList": [
+            {
+                "networkAclNo": "31",
+                "networkAclName": "test-nacl",
+                "vpcNo": "04",
+                "networkAclStatus": {"code": "RUN", "codeName": "run"},
+                "isDefault": False,
+            }
+        ],
+    }
+}
+
+SAMPLE_NETWORK_ACL_DETAIL_RESPONSE = {
+    "getNetworkAclDetailResponse": {
+        "requestId": "req-nacl-002",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "networkAclList": [
+            {
+                "networkAclNo": "31",
+                "networkAclName": "test-nacl",
+                "vpcNo": "04",
+                "networkAclStatus": {"code": "RUN", "codeName": "run"},
+                "isDefault": False,
+            }
+        ],
+    }
+}
+
+SAMPLE_NETWORK_ACL_RULE_LIST_RESPONSE = {
+    "getNetworkAclRuleListResponse": {
+        "requestId": "req-nacl-003",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "networkAclRuleList": [
+            {
+                "networkAclNo": "31",
+                "priority": 0,
+                "protocolType": {"code": "TCP", "codeName": "tcp"},
+                "portRange": "22",
+                "ruleAction": {"code": "ALLOW", "codeName": "Allow"},
+                "ipBlock": "0.0.0.0/0",
+                "networkAclRuleType": {"code": "INBND", "codeName": "Inbound"},
+            }
+        ],
+    }
+}
+
+
+def test_get_network_acl_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_LIST_RESPONSE)
+    result = make_api().get_network_acl_list()
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+    assert result["networkAclList"][0]["networkAclNo"] == "31"
+
+
+def test_get_network_acl_list_correct_path(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_LIST_RESPONSE)
+    make_api().get_network_acl_list()
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getNetworkAclList" in str(sent.url)
+
+
+def test_get_network_acl_list_filters(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_LIST_RESPONSE)
+    make_api().get_network_acl_list(
+        region_code="KR",
+        network_acl_name="test-nacl",
+        network_acl_status_code="RUN",
+        network_acl_no_list=["31", "32"],
+        page_no=1,
+        page_size=20,
+        vpc_no="04",
+    )
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "regionCode=KR" in url
+    assert "networkAclName=test-nacl" in url
+    assert "networkAclStatusCode=RUN" in url
+    assert "networkAclNoList.1=31" in url
+    assert "networkAclNoList.2=32" in url
+    assert "pageNo=1" in url
+    assert "pageSize=20" in url
+    assert "vpcNo=04" in url
+
+
+@pytest.mark.asyncio
+async def test_aget_network_acl_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_LIST_RESPONSE)
+    result = await make_api().aget_network_acl_list()
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+
+
+def test_get_network_acl_detail_path_and_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_DETAIL_RESPONSE)
+    result = make_api().get_network_acl_detail(network_acl_no="31")
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getNetworkAclDetail" in str(sent.url)
+    assert "networkAclNo=31" in str(sent.url)
+    assert result["networkAclList"][0]["networkAclName"] == "test-nacl"
+
+
+@pytest.mark.asyncio
+async def test_aget_network_acl_detail_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_DETAIL_RESPONSE)
+    result = await make_api().aget_network_acl_detail(network_acl_no="31")
+    assert isinstance(result, dict)
+
+
+def test_get_network_acl_rule_list_path_and_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_RULE_LIST_RESPONSE)
+    result = make_api().get_network_acl_rule_list(
+        network_acl_no="31", network_acl_rule_type_code="INBND"
+    )
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getNetworkAclRuleList" in str(sent.url)
+    assert "networkAclNo=31" in str(sent.url)
+    assert "networkAclRuleTypeCode=INBND" in str(sent.url)
+    assert result["networkAclRuleList"][0]["portRange"] == "22"
+
+
+@pytest.mark.asyncio
+async def test_aget_network_acl_rule_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_NETWORK_ACL_RULE_LIST_RESPONSE)
+    result = await make_api().aget_network_acl_rule_list(network_acl_no="31")
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+
+
+# --- Network ACL Deny-Allow Group ---
+
+SAMPLE_DAG_LIST_RESPONSE = {
+    "getNetworkAclDenyAllowGroupListResponse": {
+        "requestId": "req-dag-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "networkAclDenyAllowGroupList": [
+            {
+                "networkAclDenyAllowGroupNo": "40",
+                "networkAclDenyAllowGroupName": "test-dag",
+                "networkAclDenyAllowGroupStatus": {"code": "RUN", "codeName": "run"},
+                "vpcNo": "04",
+                "isApplied": False,
+            }
+        ],
+    }
+}
+
+SAMPLE_DAG_DETAIL_RESPONSE = {
+    "getNetworkAclDenyAllowGroupDetailResponse": {
+        "requestId": "req-dag-002",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "networkAclDenyAllowGroupList": [
+            {
+                "networkAclDenyAllowGroupNo": "40",
+                "networkAclDenyAllowGroupName": "test-dag",
+                "networkAclDenyAllowGroupStatus": {"code": "RUN", "codeName": "run"},
+                "vpcNo": "04",
+                "ipList": [{"ip": "10.0.0.1"}],
+                "isApplied": False,
+            }
+        ],
+    }
+}
+
+
+def test_get_network_acl_deny_allow_group_list_returns_dict(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_DAG_LIST_RESPONSE)
+    result = make_api().get_network_acl_deny_allow_group_list()
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+    assert (
+        result["networkAclDenyAllowGroupList"][0]["networkAclDenyAllowGroupNo"] == "40"
+    )
+
+
+def test_get_network_acl_deny_allow_group_list_correct_path(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_DAG_LIST_RESPONSE)
+    make_api().get_network_acl_deny_allow_group_list()
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getNetworkAclDenyAllowGroupList" in str(sent.url)
+
+
+def test_get_network_acl_deny_allow_group_list_filters(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_DAG_LIST_RESPONSE)
+    make_api().get_network_acl_deny_allow_group_list(
+        region_code="KR",
+        vpc_no="04",
+        network_acl_deny_allow_group_name="test-dag",
+        network_acl_deny_allow_group_status_code="RUN",
+        network_acl_deny_allow_group_no_list=["40", "41"],
+        is_applied=False,
+        page_no=1,
+        page_size=20,
+    )
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "regionCode=KR" in url
+    assert "vpcNo=04" in url
+    assert "networkAclDenyAllowGroupName=test-dag" in url
+    assert "networkAclDenyAllowGroupStatusCode=RUN" in url
+    assert "networkAclDenyAllowGroupNoList.1=40" in url
+    assert "networkAclDenyAllowGroupNoList.2=41" in url
+    assert "isApplied=false" in url
+    assert "pageNo=1" in url
+    assert "pageSize=20" in url
+
+
+@pytest.mark.asyncio
+async def test_aget_network_acl_deny_allow_group_list_returns_dict(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_DAG_LIST_RESPONSE)
+    result = await make_api().aget_network_acl_deny_allow_group_list()
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+
+
+def test_get_network_acl_deny_allow_group_detail_path_and_params(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_DAG_DETAIL_RESPONSE)
+    result = make_api().get_network_acl_deny_allow_group_detail(
+        network_acl_deny_allow_group_no="40"
+    )
+    sent = httpx_mock.get_requests()[0]
+    assert "/vpc/v2/getNetworkAclDenyAllowGroupDetail" in str(sent.url)
+    assert "networkAclDenyAllowGroupNo=40" in str(sent.url)
+    assert result["networkAclDenyAllowGroupList"][0]["ipList"] == [{"ip": "10.0.0.1"}]
+
+
+@pytest.mark.asyncio
+async def test_aget_network_acl_deny_allow_group_detail_returns_dict(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_DAG_DETAIL_RESPONSE)
+    result = await make_api().aget_network_acl_deny_allow_group_detail(
+        network_acl_deny_allow_group_no="40"
+    )
+    assert isinstance(result, dict)

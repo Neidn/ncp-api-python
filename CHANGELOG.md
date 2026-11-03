@@ -1,6 +1,20 @@
 # CHANGELOG
 
 
+## v0.16.0 (2026-11-03)
+
+### Features
+
+- Add SubAccountApi.get_sub_account, get_group, get_policy
+  ([`cab1783`](https://github.com/Neidn/ncp-api-python/commit/cab17833f32de84947d0e795a4611b84160916a7))
+
+Detail-lookup endpoints for investigating sub accounts: single sub-account, group, and policy by id
+  (GET /sub-accounts/{id}, GET /groups/{id}, GET /policies/{id}, the latter with optional
+  withPermissions).
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+
 ## v0.15.0 (2026-11-03)
 
 ### Features

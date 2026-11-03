@@ -304,3 +304,54 @@ async def test_aget_load_balancer_rule_list_returns_dict(httpx_mock: Any) -> Non
     )
     assert isinstance(result, dict)
     assert result["loadBalancerRuleList"][0]["priority"] == 10000
+
+
+# --- get_target_list ---
+
+SAMPLE_TARGET_RESPONSE = {
+    "getTargetListResponse": {
+        "requestId": "req-target-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "targetList": [
+            {
+                "targetNo": "44444",
+                "targetName": "my-target",
+                "targetIp": "10.0.0.1",
+                "healthCheckStatus": {"code": "UP", "codeName": "Health UP state"},
+            }
+        ],
+    }
+}
+
+
+def test_get_target_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_TARGET_RESPONSE)
+    result = make_api().get_target_list(target_group_no="55555")
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+    assert result["targetList"][0]["targetNo"] == "44444"
+
+
+def test_get_target_list_correct_path_and_params(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_TARGET_RESPONSE)
+    make_api().get_target_list(target_group_no="55555")
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "/vloadbalancer/v2/getTargetList" in url
+    assert "targetGroupNo=55555" in url
+
+
+def test_get_target_list_region_code(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_TARGET_RESPONSE)
+    make_api().get_target_list(target_group_no="55555", region_code="KR")
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "regionCode=KR" in url
+
+
+async def test_aget_target_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_TARGET_RESPONSE)
+    result = await make_api().aget_target_list(target_group_no="55555")
+    assert isinstance(result, dict)
+    assert result["targetList"][0]["healthCheckStatus"]["code"] == "UP"

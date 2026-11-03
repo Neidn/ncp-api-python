@@ -225,3 +225,33 @@ class LoadBalancerApi(NcpHttpAdapter):
         raw = await self.arequest("GET", "/getTargetGroupDetail", params=params)
         result: dict[str, Any] = raw["getTargetGroupDetailResponse"]
         return result
+
+    def get_load_balancer_listener_list(
+        self,
+        *,
+        load_balancer_instance_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            loadBalancerInstanceNo=load_balancer_instance_no,
+            responseFormatType="json",
+        )
+        raw = self.request("GET", "/getLoadBalancerListenerList", params=params)
+        result: dict[str, Any] = raw["getLoadBalancerListenerListResponse"]
+        return result
+
+    async def aget_load_balancer_listener_list(
+        self,
+        *,
+        load_balancer_instance_no: str,
+        region_code: str | None = None,
+    ) -> dict[str, Any]:
+        params = _build_params(
+            regionCode=region_code,
+            loadBalancerInstanceNo=load_balancer_instance_no,
+            responseFormatType="json",
+        )
+        raw = await self.arequest("GET", "/getLoadBalancerListenerList", params=params)
+        result: dict[str, Any] = raw["getLoadBalancerListenerListResponse"]
+        return result

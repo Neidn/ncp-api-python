@@ -183,3 +183,65 @@ async def test_aget_lb_list_returns_dict(httpx_mock: Any) -> None:
     assert isinstance(result, dict)
     assert result["totalRows"] == 2
     assert len(result["loadBalancerInstanceList"]) == 2
+
+
+# --- get_load_balancer_listener_list ---
+
+SAMPLE_LISTENER_RESPONSE = {
+    "getLoadBalancerListenerListResponse": {
+        "requestId": "req-listener-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "loadBalancerListenerList": [
+            {
+                "loadBalancerInstanceNo": "11111",
+                "loadBalancerListenerNo": "22222",
+                "protocolType": {"code": "HTTP", "codeName": "HTTP protocol"},
+                "port": 80,
+                "useHttp2": False,
+            }
+        ],
+    }
+}
+
+
+def test_get_load_balancer_listener_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_LISTENER_RESPONSE)
+    result = make_api().get_load_balancer_listener_list(
+        load_balancer_instance_no="11111"
+    )
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+    assert result["loadBalancerListenerList"][0]["port"] == 80
+
+
+def test_get_load_balancer_listener_list_correct_path_and_params(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_LISTENER_RESPONSE)
+    make_api().get_load_balancer_listener_list(load_balancer_instance_no="11111")
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "/vloadbalancer/v2/getLoadBalancerListenerList" in url
+    assert "loadBalancerInstanceNo=11111" in url
+
+
+def test_get_load_balancer_listener_list_region_code(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_LISTENER_RESPONSE)
+    make_api().get_load_balancer_listener_list(
+        load_balancer_instance_no="11111", region_code="KR"
+    )
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "regionCode=KR" in url
+
+
+async def test_aget_load_balancer_listener_list_returns_dict(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_LISTENER_RESPONSE)
+    result = await make_api().aget_load_balancer_listener_list(
+        load_balancer_instance_no="11111"
+    )
+    assert isinstance(result, dict)
+    assert result["loadBalancerListenerList"][0]["loadBalancerListenerNo"] == "22222"

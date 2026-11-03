@@ -1,6 +1,21 @@
 # CHANGELOG
 
 
+## v0.15.0 (2026-11-03)
+
+### Features
+
+- **load-balancer**: Add get_target_list for target group targets
+  ([`1f0d988`](https://github.com/Neidn/ncp-api-python/commit/1f0d988d2542f1962f9ce8ffffdad09e52df6648))
+
+Mirrors get_target_group_detail: GET /vloadbalancer/v2/getTargetList with required targetGroupNo +
+  optional regionCode, unwrapping getTargetListResponse. Sync + async, plus adapter tests.
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01BRk5oduiPFZr2CvXMLBSoG
+
+
 ## v0.14.0 (2026-11-03)
 
 ### Features

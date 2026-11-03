@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v0.13.0 (2026-11-03)
+
+### Chores
+
+- Expand CI test matrix to Python 3.13-3.15
+  ([`1b40755`](https://github.com/Neidn/ncp-api-python/commit/1b407550ce50eb781018cc6506e2ac41c1b68750))
+
+Python 3.15.0 released 2026-10-09. Keeps the existing >=3.9 floor (requires-python unchanged) and
+  bumps lint/typecheck/release jobs to run on 3.15.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+### Features
+
+- Add LoadBalancerApi.get_load_balancer_listener_list
+  ([`57a0443`](https://github.com/Neidn/ncp-api-python/commit/57a04432546f941764731763792c02639e1b9876))
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.12.0 (2026-11-02)
 
 ### Features

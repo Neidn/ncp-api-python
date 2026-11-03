@@ -1,6 +1,18 @@
 # CHANGELOG
 
 
+## v0.14.0 (2026-11-03)
+
+### Features
+
+- Add LoadBalancerApi.get_load_balancer_rule_list
+  ([`d369680`](https://github.com/Neidn/ncp-api-python/commit/d369680840fa186e265f8683f20c000696d8a295))
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+Claude-Session: https://claude.ai/code/session_01HQLhFH766hkFhr1epC4bxx
+
+
 ## v0.13.0 (2026-11-03)
 
 ### Chores

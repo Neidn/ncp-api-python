@@ -92,6 +92,38 @@ class SubAccountApi(NcpHttpAdapter):
         )
         return await self.arequest("POST", "/policies", json=body)
 
+    def get_sub_account(self, *, sub_account_id: str) -> dict[str, Any]:
+        return self.request("GET", f"/sub-accounts/{sub_account_id}")
+
+    async def aget_sub_account(self, *, sub_account_id: str) -> dict[str, Any]:
+        return await self.arequest("GET", f"/sub-accounts/{sub_account_id}")
+
+    def get_group(self, *, group_id: str) -> dict[str, Any]:
+        return self.request("GET", f"/groups/{group_id}")
+
+    async def aget_group(self, *, group_id: str) -> dict[str, Any]:
+        return await self.arequest("GET", f"/groups/{group_id}")
+
+    def get_policy(
+        self, *, policy_id: str, with_permissions: bool | None = None
+    ) -> dict[str, Any]:
+        params = _build_params(
+            withPermissions=(
+                str(with_permissions).lower() if with_permissions is not None else None
+            ),
+        )
+        return self.request("GET", f"/policies/{policy_id}", params=params)
+
+    async def aget_policy(
+        self, *, policy_id: str, with_permissions: bool | None = None
+    ) -> dict[str, Any]:
+        params = _build_params(
+            withPermissions=(
+                str(with_permissions).lower() if with_permissions is not None else None
+            ),
+        )
+        return await self.arequest("GET", f"/policies/{policy_id}", params=params)
+
 
 def _list_sub_accounts_params(
     *,

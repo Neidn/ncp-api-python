@@ -245,3 +245,62 @@ async def test_aget_load_balancer_listener_list_returns_dict(
     )
     assert isinstance(result, dict)
     assert result["loadBalancerListenerList"][0]["loadBalancerListenerNo"] == "22222"
+
+
+# --- get_load_balancer_rule_list ---
+
+SAMPLE_RULE_RESPONSE = {
+    "getLoadBalancerRuleListResponse": {
+        "requestId": "req-rule-001",
+        "returnCode": "0",
+        "returnMessage": "success",
+        "totalRows": 1,
+        "loadBalancerRuleList": [
+            {
+                "loadBalancerListenerNo": "22222",
+                "loadBalancerRuleNo": "33333",
+                "priority": 10000,
+                "loadBalancerRuleConditionList": [
+                    {"ruleConditionType": {"code": "DEFAULT"}}
+                ],
+            }
+        ],
+    }
+}
+
+
+def test_get_load_balancer_rule_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RULE_RESPONSE)
+    result = make_api().get_load_balancer_rule_list(load_balancer_listener_no="22222")
+    assert isinstance(result, dict)
+    assert result["totalRows"] == 1
+    assert result["loadBalancerRuleList"][0]["loadBalancerRuleNo"] == "33333"
+
+
+def test_get_load_balancer_rule_list_correct_path_and_params(
+    httpx_mock: Any,
+) -> None:
+    httpx_mock.add_response(json=SAMPLE_RULE_RESPONSE)
+    make_api().get_load_balancer_rule_list(load_balancer_listener_no="22222")
+    sent = httpx_mock.get_requests()[0]
+    url = str(sent.url)
+    assert "/vloadbalancer/v2/getLoadBalancerRuleList" in url
+    assert "loadBalancerListenerNo=22222" in url
+
+
+def test_get_load_balancer_rule_list_region_code(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RULE_RESPONSE)
+    make_api().get_load_balancer_rule_list(
+        load_balancer_listener_no="22222", region_code="KR"
+    )
+    url = str(httpx_mock.get_requests()[0].url)
+    assert "regionCode=KR" in url
+
+
+async def test_aget_load_balancer_rule_list_returns_dict(httpx_mock: Any) -> None:
+    httpx_mock.add_response(json=SAMPLE_RULE_RESPONSE)
+    result = await make_api().aget_load_balancer_rule_list(
+        load_balancer_listener_no="22222"
+    )
+    assert isinstance(result, dict)
+    assert result["loadBalancerRuleList"][0]["priority"] == 10000

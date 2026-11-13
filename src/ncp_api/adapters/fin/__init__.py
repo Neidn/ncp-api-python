@@ -57,6 +57,10 @@ from ncp_api.adapters.subaccount import (
     SubAccountApiV2,
 )
 from ncp_api.adapters.vpc import VpcApi
+from ncp_api.adapters.vpc_search_engine import (
+    VPC_SEARCH_ENGINE_BASE_URLS,
+    VpcSearchEngineApi,
+)
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import NcpEnv
 
@@ -126,4 +130,7 @@ class FinAdapter(NcpHttpAdapter):
         self.sens = SensApi(SENS_BASE_URLS[NcpEnv.FIN], signer)
         self.cloud_outbound_mailer = CloudOutboundMailerApi(
             CLOUD_OUTBOUND_MAILER_BASE_URLS[NcpEnv.FIN], signer
+        )
+        self.vpc_search_engine = VpcSearchEngineApi(
+            VPC_SEARCH_ENGINE_BASE_URLS[NcpEnv.FIN], signer
         )

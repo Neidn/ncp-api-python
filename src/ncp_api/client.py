@@ -39,6 +39,7 @@ from ncp_api.adapters.source_deploy import VpcSourceDeployApi
 from ncp_api.adapters.source_pipeline import SourcePipelineApi
 from ncp_api.adapters.subaccount import SubAccountApi, SubAccountApiV2
 from ncp_api.adapters.vpc import VpcApi
+from ncp_api.adapters.vpc_search_engine import VpcSearchEngineApi
 from ncp_api.auth import HmacSigner
 from ncp_api.environment import BASE_URLS, NcpEnv
 
@@ -214,6 +215,10 @@ class NcpClient:
     @property
     def cloud_outbound_mailer(self) -> CloudOutboundMailerApi:
         return self._adapter.cloud_outbound_mailer
+
+    @property
+    def vpc_search_engine(self) -> VpcSearchEngineApi:
+        return self._adapter.vpc_search_engine
 
     def close(self) -> None:
         self._adapter.close()

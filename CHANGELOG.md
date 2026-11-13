@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.17.0 (2026-11-13)
+
+### Features
+
+- Add VpcSearchEngineApi.get_cluster_info_list, get_cluster_node_list
+  ([`c324735`](https://github.com/Neidn/ncp-api-python/commit/c32473577b6d65507d1f056690b0f4e30e891641))
+
+VPC Search Engine Service cluster read endpoints: cluster list with filters/paging and a cluster's
+  node list by instance no, both supporting the v2 (수도권) / krs-v2 (남부권) region variants.
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+
+
 ## v0.16.0 (2026-11-03)
 
 ### Features
